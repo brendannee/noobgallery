@@ -16,5 +16,9 @@ export default ({ children, title = 'Wandering Noobs' }) => (
     </header>
 
     { children }
+
+    <footer>
+      Powered by <a href="https://github.com/brendannee/noobgallery">noobgallery</a>
+    </footer>
   </div>
 )

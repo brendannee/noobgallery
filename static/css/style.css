@@ -81,3 +81,14 @@ a.breadcrumb:hover {
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
 }
+
+footer {
+  text-align: center;
+  color: #DDD;
+  padding: 15px 0;
+  clear: both;
+}
+
+footer a {
+  color: #DDD;
+}
