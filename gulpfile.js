@@ -14,6 +14,7 @@ const awspublish = require('gulp-awspublish');
 const CORES = require('os').cpus().length;
 const iptc = require('node-iptc');
 const exif = require('exif-parser');
+const _ = require('lodash');
 
 const galleryLocation = untildify(process.env.GALLERY_LOCAL_PATH);
 const imageExtensions = ['png','gif','jpeg','jpg','bmp'];
@@ -36,10 +37,10 @@ function summarizeFolder(folder) {
     if (statSync(filePath).isDirectory()) {
       return false;
     }
-    return imageExtensions.indexOf(path.extname(filePath).toLowerCase().substr(1)) !== -1;
+    return imageExtensions.includes(path.extname(filePath).toLowerCase().substr(1))
   });
 
-  return images.map(image => {
+  return _.sortBy(images.map(image => {
     const buffer = readFileSync(path.join(galleryPath, image));
     const iptcData = iptc(buffer);
 
@@ -73,13 +74,14 @@ function summarizeFolder(folder) {
       thumb: `${folder}/thumbs/${image}`,
       preview: `${folder}/previews/${image}`,
       large: `${folder}/large/${image}`,
+      createDate,
       subHtml,
       location: {
         lat,
         lng
       }
     }
-  });
+  }), ['createDate']);
 }
 
 function summarizeGallery() {
@@ -174,8 +176,7 @@ gulp.task('publish', () => {
     .pipe(parallel(awspublish.gzip(), CORES))
     .pipe(parallel(publisher.publish(headers), CORES))
     .pipe(publisher.cache())
-    .pipe(awspublish.reporter())
-    .pipe(debug({title: 'Published to Amazon S3'}));
+    .pipe(awspublish.reporter());
 });
 
 gulp.task('resize', gulp.series('large', 'previews', 'thumbs'));
