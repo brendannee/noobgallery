@@ -1,0 +1,6 @@
+{
+  "env": {
+    "GALLERY_URL": "http://img.wanderingnoobs.com",
+    "GALLERY_TITLE": "Wandering Noobs"
+  }
+}
