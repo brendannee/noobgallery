@@ -1,0 +1,34 @@
+{
+  "name": "wanderingnoobs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "private": false,
+  "author": "Brendan Nee <brendan@blinktag.com>",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "^1.12.4",
+    "lg-autoplay": "^1.0.4",
+    "lg-fullscreen": "^1.0.1",
+    "lg-hash": "^1.0.4",
+    "lg-pager": "^1.0.2",
+    "lg-share": "^1.1.0",
+    "lg-thumbnail": "^1.1.0",
+    "lg-zoom": "^1.1.0",
+    "lightgallery": "^1.6.11",
+    "lodash": "^4.17.10",
+    "next": "^6.1.1",
+    "node-fetch": "^2.1.2",
+    "path-match": "^1.2.4",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-define": "^1.3.0"
+  }
+}

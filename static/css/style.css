@@ -1,0 +1,102 @@
+body {
+  background-color: #222222;
+  font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.gallery-title {
+  margin: 30px 37px;
+  color: #ffffff;
+}
+
+.gallery-title a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.gallery-title a:hover {
+  text-decoration: underline;
+}
+
+.gallery>ul {
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+.gallery>ul>li {
+  float: left;
+  margin-bottom: 15px;
+  margin-right: 20px;
+  width: 300px;
+}
+
+.gallery>ul>li a.photo-link {
+  border: 3px solid #FFF;
+  border-radius: 3px;
+  display: block;
+  overflow: hidden;
+  width: 100%;
+}
+
+.gallery>ul>li .photo-link>img {
+  -webkit-transition: -webkit-transform 0.15s ease 0s;
+  -moz-transition: -moz-transform 0.15s ease 0s;
+  -o-transition: -o-transform 0.15s ease 0s;
+  transition: transform 0.15s ease 0s;
+  -webkit-transform: scale3d(1, 1, 1);
+  transform: scale3d(1, 1, 1);
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+.gallery>ul>li a.photo-link:hover>img {
+  -webkit-transform: scale3d(1.1, 1.1, 1.1);
+  transform: scale3d(1.1, 1.1, 1.1);
+}
+
+.gallery>ul>li a.photo-link:hover .gallery-poster>img {
+  opacity: 1;
+}
+
+.gallery>ul>li a.photo-link .gallery-poster {
+  background-color: rgba(0, 0, 0, 0.1);
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  -webkit-transition: background-color 0.15s ease 0s;
+  -o-transition: background-color 0.15s ease 0s;
+  transition: background-color 0.15s ease 0s;
+}
+
+.gallery>ul>li a.photo-link .gallery-poster>img {
+  left: 50%;
+  margin-left: -10px;
+  margin-top: -10px;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  -webkit-transition: opacity 0.3s ease 0s;
+  -o-transition: opacity 0.3s ease 0s;
+  transition: opacity 0.3s ease 0s;
+}
+
+.gallery>ul>li a.photo-link:hover .gallery-poster {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.gallery>ul>li a.photo-link-title {
+  display: block;
+  color: #222222;
+  text-align: center;
+  padding: 8px 10px;
+  text-decoration: none;
+  font-size: 20px;
+  background: #FFFFFF;
+  font-weight: bold;
+}
