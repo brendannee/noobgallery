@@ -1,6 +1,6 @@
-# gallery
+# noobgallery
 
-This is a photo gallery powered by [lightgallery](https://sachinchoolur.github.io/lightGallery/). It uses [nextjs](https://nextjs.org/) to serve pages and Amazon S3 to store and serve images.
+noobgallery is a photo gallery powered by [lightgallery](https://sachinchoolur.github.io/lightGallery/). It uses [nextjs](https://nextjs.org/) to serve pages and Amazon S3 to store and serve images.
 
 A helper gulp task is included to prep images and write summary JSON files to be uploaded to Amazon S3.
 
@@ -32,7 +32,7 @@ Mac OS X (using Homebrew):
 
     brew install vips --with-webp --with-graphicsmagick
 
-### Running
+### Running the image prep process
 
     gulp
 

@@ -1,7 +1,7 @@
 {
-  "name": "wanderingnoobs",
+  "name": "noobgallery",
   "version": "1.0.0",
-  "description": "",
+  "description": "A minimalistic photo gallery with images stored on Amazon S3 and just the features you want.",
   "main": "index.js",
   "scripts": {
     "dev": "node server.js",
