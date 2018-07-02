@@ -1,46 +1,60 @@
 body {
   background-color: #222222;
   font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
 }
 
 * {
   box-sizing: border-box;
 }
 
+.gallery-wrapper {
+  margin: 25px;
+}
+
 .gallery-title {
-  margin: 30px 37px;
+  margin: 30px 10px 10px;
   color: #ffffff;
 }
 
-.gallery-title a {
-  color: #ffffff;
+.breadcrumbs {
+  color: #ddd;
+  margin: 0 10px 15px;
+}
+
+.breadcrumb {
+  color: #ddd;
+  padding-right: 8px;
+}
+
+a.breadcrumb {
+  color: #ddd;
   text-decoration: none;
 }
 
-.gallery-title a:hover {
+a.breadcrumb:hover {
+  color: #ddd;
   text-decoration: underline;
 }
 
-.gallery>ul {
-  margin-bottom: 0;
-  list-style-type: none;
+.gallery .grid-item {
+  margin-bottom: 10px;
 }
 
-.gallery>ul>li {
-  float: left;
-  margin-bottom: 15px;
-  margin-right: 20px;
-}
-
-.gallery>ul>li a.photo-link {
-  border: 3px solid #FFF;
-  border-radius: 3px;
+.gallery .grid-item .photo-link {
+  border: 2px solid #FFF;
+  border-radius: 2px;
   display: block;
   overflow: hidden;
-  width: 100%;
 }
 
-.gallery>ul>li .photo-link>img {
+.gallery.gallery-index .grid-item .photo-link {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+
+.gallery .grid-item .photo-link > img {
   -webkit-transition: -webkit-transform 0.15s ease 0s;
   -moz-transition: -moz-transform 0.15s ease 0s;
   -o-transition: -o-transform 0.15s ease 0s;
@@ -50,44 +64,12 @@ body {
   display: block;
 }
 
-.gallery>ul>li a.photo-link:hover>img {
+.gallery .grid-item a.photo-link:hover > img {
   -webkit-transform: scale3d(1.1, 1.1, 1.1);
   transform: scale3d(1.1, 1.1, 1.1);
 }
 
-.gallery>ul>li a.photo-link:hover .gallery-poster>img {
-  opacity: 1;
-}
-
-.gallery>ul>li a.photo-link .gallery-poster {
-  background-color: rgba(0, 0, 0, 0.1);
-  bottom: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  -webkit-transition: background-color 0.15s ease 0s;
-  -o-transition: background-color 0.15s ease 0s;
-  transition: background-color 0.15s ease 0s;
-}
-
-.gallery>ul>li a.photo-link .gallery-poster>img {
-  left: 50%;
-  margin-left: -10px;
-  margin-top: -10px;
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  -webkit-transition: opacity 0.3s ease 0s;
-  -o-transition: opacity 0.3s ease 0s;
-  transition: opacity 0.3s ease 0s;
-}
-
-.gallery>ul>li a.photo-link:hover .gallery-poster {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.gallery>ul>li a.photo-link-title {
+.gallery.gallery-index .grid-item a.photo-link-title {
   display: block;
   color: #222222;
   text-align: center;
@@ -96,64 +78,6 @@ body {
   font-size: 20px;
   background: #FFFFFF;
   font-weight: bold;
-}
-
-.gallery .justified-gallery>a>img {
-  -webkit-transition: -webkit-transform 0.15s ease 0s;
-  -moz-transition: -moz-transform 0.15s ease 0s;
-  -o-transition: -o-transform 0.15s ease 0s;
-  transition: transform 0.15s ease 0s;
-  -webkit-transform: scale3d(1, 1, 1);
-  transform: scale3d(1, 1, 1);
-  height: 100%;
-  width: 100%;
-}
-
-.gallery .justified-gallery>a:hover>img {
-  -webkit-transform: scale3d(1.1, 1.1, 1.1);
-  transform: scale3d(1.1, 1.1, 1.1);
-}
-
-.gallery .justified-gallery>a:hover .gallery-poster>img {
-  opacity: 1;
-}
-
-.gallery .justified-gallery>a .gallery-poster {
-  background-color: rgba(0, 0, 0, 0.1);
-  bottom: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  -webkit-transition: background-color 0.15s ease 0s;
-  -o-transition: background-color 0.15s ease 0s;
-  transition: background-color 0.15s ease 0s;
-}
-
-.gallery .justified-gallery>a .gallery-poster>img {
-  left: 50%;
-  margin-left: -10px;
-  margin-top: -10px;
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  -webkit-transition: opacity 0.3s ease 0s;
-  -o-transition: opacity 0.3s ease 0s;
-  transition: opacity 0.3s ease 0s;
-}
-
-.gallery .justified-gallery>a:hover .gallery-poster {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.gallery .video .gallery-poster img {
-  height: 48px;
-  margin-left: -24px;
-  margin-top: -24px;
-  opacity: 0.8;
-  width: 48px;
-}
-
-.gallery.dark>ul>li a {
-  border: 3px solid #04070a;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
 }

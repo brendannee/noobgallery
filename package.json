@@ -24,6 +24,7 @@
     "lg-zoom": "^1.1.0",
     "lightgallery": "^1.6.11",
     "lodash": "^4.17.10",
+    "masonry-layout": "^4.2.1",
     "next": "^6.1.1",
     "node-fetch": "^2.1.2",
     "path-match": "^1.2.4",

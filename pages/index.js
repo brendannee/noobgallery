@@ -10,7 +10,6 @@ export default class Index extends React.Component {
     try {
       const res = await fetch(`${process.env.GALLERY_URL}/index.json`)
       const json = await res.json()
-      console.log(json)
       return {galleries: json}
     } catch(err) {
       console.error(err)
@@ -18,31 +17,41 @@ export default class Index extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const masonry = require('masonry-layout')
+  }
+
   render() {
     return (
       <Layout>
-        <h1 className="gallery-title">{process.env.GALLERY_TITLE}</h1>
-        <div className="gallery">
-          <ul id="lightgallery">
+        <div class="gallery-wrapper">
+          <h1 className="gallery-title">{process.env.GALLERY_TITLE}</h1>
+          <div id="lightgallery" className="grid gallery gallery-index" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 300, "gutter": 10 }'>
             {this.props.galleries.map((gallery, key) => {
+              const width = 300;
+              const height = Math.round(width / gallery.imageSize.width * gallery.imageSize.height).toString();
               return (
-                <li key={key}>
+                <div
+                  className="grid-item"
+                  key={key}
+                  style={{width: `${width}px`, height: `${height + 40}px`}}
+                >
                   <Link href={`/gallery/${gallery.galleryId}/`} >
                     <a className="photo-link">
                       <img
                         src={`${process.env.GALLERY_URL}/${gallery.medium}`}
-                        width="300"
-                        height={Math.round(300 / gallery.imageSize.width * gallery.imageSize.height).toString()}
+                        width={width}
+                        height={height}
                       />
                     </a>
                   </Link>
                   <Link href={`/gallery/${gallery.galleryId}/`} >
                     <a className="photo-link-title">{_.startCase(gallery.galleryId)}</a>
                   </Link>
-                </li>
+                </div>
               )
             })}
-          </ul>
+          </div>
         </div>
       </Layout>
     )
