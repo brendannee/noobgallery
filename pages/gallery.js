@@ -45,13 +45,13 @@ export default class Index extends React.Component {
               return (
                 <li
                   key={key}
-                  data-responsive={`${process.env.GALLERY_URL}/${image.thumb} 200, ${process.env.GALLERY_URL}/${image.preview} 1500, ${process.env.GALLERY_URL}/${image.large} 3000`}
+                  data-responsive={`${process.env.GALLERY_URL}/${image.thumb} 200, ${process.env.GALLERY_URL}/${image.medium} 600, ${process.env.GALLERY_URL}/${image.large} 3000`}
                   data-src={`${process.env.GALLERY_URL}/${image.src}`}
                   data-sub-html={image.subHtml}
                 >
                   <a href="" className="photo-link">
                     <img
-                      src={`${process.env.GALLERY_URL}/${image.preview}`}
+                      src={`${process.env.GALLERY_URL}/${image.medium}`}
                       width="300"
                       height={Math.round(300 / image.imageSize.width * image.imageSize.height).toString()}
                     />

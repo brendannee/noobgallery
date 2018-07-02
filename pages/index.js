@@ -6,6 +6,7 @@ import _ from 'lodash'
 
 export default class Index extends React.Component {
   static async getInitialProps() {
+
     try {
       const res = await fetch(`${process.env.GALLERY_URL}/index.json`)
       const json = await res.json()
@@ -29,7 +30,7 @@ export default class Index extends React.Component {
                   <Link href={`/gallery/${gallery.galleryId}/`} >
                     <a className="photo-link">
                       <img
-                        src={`${process.env.GALLERY_URL}/${gallery.preview}`}
+                        src={`${process.env.GALLERY_URL}/${gallery.medium}`}
                         width="300"
                         height={Math.round(300 / gallery.imageSize.width * gallery.imageSize.height).toString()}
                       />

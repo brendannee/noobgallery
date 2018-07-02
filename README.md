@@ -1,5 +1,20 @@
 # gallery
 
+This is a photo gallery powered by [lightgallery](https://sachinchoolur.github.io/lightGallery/). It uses [nextjs](https://nextjs.org/) to serve pages and Amazon S3 to store and serve images.
+
+A helper gulp task is included to prep images and write summary JSON files to be uploaded to Amazon S3.
+
+## Configuration
+
+Add a `.env` file with the following variables:
+
+GALLERY_LOCAL_PATH=~/path/to/your/gallery/root
+GALLERY_URL=http://url.to-your-s3-bucket.com
+GALLERY_TITLE=Your Gallery Name
+AWS_REGION=us-east-1
+AWS_BUCKET=yourbucket
+AWS_ACCESS_KEY=YOUR_AWS_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET KEY
 
 ## Prepping Images
 
@@ -11,23 +26,11 @@ All of this is then uploaded to an Amazon S3 bucket you specify.
 
 ### Installation
 
-Install imagemagick and graphicsmagick
+Install libvips for image resizing
 
 Mac OS X (using Homebrew):
 
-    brew install imagemagick
-    brew install graphicsmagick
-
-### Configuration
-
-Add a `.env` file with the following variables:
-
-GALLERY_LOCAL_PATH=~/path/to/your/gallery/root
-AWS_REGION=us-east-1
-AWS_BUCKET=yourbucket
-AWS_ACCESS_KEY=YOUR_AWS_ACCESS_KEY
-AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET KEY
-
+    brew install vips --with-webp --with-graphicsmagick
 
 ### Running
 
@@ -35,4 +38,7 @@ AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET KEY
 
 ## Credits
 
-Based on [egp-prep](https://github.com/timmydoza/epg-prep).
+Inspired by:
+* [express-photo-gallery](https://github.com/timmydoza/express-photo-gallery)
+* [egp-prep](https://github.com/timmydoza/epg-prep)
+* [gulp-sharp-minimal](https://github.com/pupil-labs/gulp-sharp-minimal)
