@@ -1,5 +1,6 @@
 import React from 'react'
 import Layout from '../components/layout'
+import Link from 'next/link'
 import fetch from 'node-fetch'
 import _ from 'lodash'
 
@@ -25,12 +26,18 @@ export default class Index extends React.Component {
             {this.props.galleries.map((gallery, key) => {
               return (
                 <li key={key}>
-                  <a href={`/gallery/${gallery.galleryId}`} className="photo-link">
-                    <img
-                      src={`${process.env.GALLERY_URL}/${gallery.preview}`}
-                    />
-                  </a>
-                  <a href={`/gallery/${gallery.galleryId}`} className="photo-link-title">{_.startCase(gallery.galleryId)}</a>
+                  <Link href={`/gallery/${gallery.galleryId}/`} >
+                    <a className="photo-link">
+                      <img
+                        src={`${process.env.GALLERY_URL}/${gallery.preview}`}
+                        width="300"
+                        height={Math.round(300 / gallery.imageSize.width * gallery.imageSize.height).toString()}
+                      />
+                    </a>
+                  </Link>
+                  <Link href={`/gallery/${gallery.galleryId}/`} >
+                    <a className="photo-link-title">{_.startCase(gallery.galleryId)}</a>
+                  </Link>
                 </li>
               )
             })}

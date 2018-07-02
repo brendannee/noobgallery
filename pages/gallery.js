@@ -52,6 +52,8 @@ export default class Index extends React.Component {
                   <a href="" className="photo-link">
                     <img
                       src={`${process.env.GALLERY_URL}/${image.preview}`}
+                      width="300"
+                      height={Math.round(300 / image.imageSize.width * image.imageSize.height).toString()}
                     />
                   </a>
                 </li>

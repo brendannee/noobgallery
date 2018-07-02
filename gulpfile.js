@@ -79,7 +79,8 @@ function summarizeFolder(folder) {
       location: {
         lat,
         lng
-      }
+      },
+      imageSize: exifData.imageSize
     }
   }), ['createDate']);
 }
@@ -97,6 +98,7 @@ function summarizeGallery() {
       summary.thumb = images[0].thumb
       summary.preview = images[0].preview
       summary.large = images[0].large
+      summary.imageSize = images[0].imageSize
     }
     return summary
   })
