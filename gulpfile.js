@@ -21,6 +21,7 @@ const extensionGlob = `/*.{${imageExtensions.join(',')}}`;
 
 console.log(`Preparing: ${galleryLocation}`);
 
+const largeWidth = 3000;
 const previewWidth = 1500;
 const thumbWidth = 200;
 
@@ -71,6 +72,7 @@ function summarizeFolder(folder) {
       src: `${folder}/${image}`,
       thumb: `${folder}/thumbs/${image}`,
       preview: `${folder}/previews/${image}`,
+      large: `${folder}/large/${image}`,
       subHtml,
       location: {
         lat,
@@ -92,10 +94,24 @@ function summarizeGallery() {
       summary.src = images[0].src
       summary.thumb = images[0].thumb
       summary.preview = images[0].preview
+      summary.large = images[0].large
     }
     return summary
   })
 }
+
+gulp.task('large', () => {
+  return mergeStream(folders.map(folder => {
+    const galleryPath = path.join(galleryLocation, folder);
+    return gulp.src(path.join(galleryPath, extensionGlob), {nocase: true})
+      .pipe(parallel(resize({width: largeWidth, quality: 0.88}), CORES))
+      .pipe(rename(path => {
+        path.dirname = '';
+      }))
+      .pipe(gulp.dest('large', {cwd: galleryPath}))
+      .pipe(debug({title: 'Created large image'}));
+  }));
+});
 
 gulp.task('previews', () => {
   return mergeStream(folders.map(folder => {
@@ -162,6 +178,6 @@ gulp.task('publish', () => {
     .pipe(debug({title: 'Published to Amazon S3'}));
 });
 
-gulp.task('resize', gulp.series('previews', 'thumbs'));
+gulp.task('resize', gulp.series('large', 'previews', 'thumbs'));
 
 gulp.task('default', gulp.series('resize', 'summarize', 'summarizeGalleries', 'publish'));

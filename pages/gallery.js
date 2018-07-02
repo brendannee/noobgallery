@@ -45,7 +45,7 @@ export default class Index extends React.Component {
               return (
                 <li
                   key={key}
-                  data-responsive={`${process.env.GALLERY_URL}/${image.thumb} 200, ${process.env.GALLERY_URL}/${image.preview} 1500`}
+                  data-responsive={`${process.env.GALLERY_URL}/${image.thumb} 200, ${process.env.GALLERY_URL}/${image.preview} 1500, ${process.env.GALLERY_URL}/${image.large} 3000`}
                   data-src={`${process.env.GALLERY_URL}/${image.src}`}
                   data-sub-html={image.subHtml}
                 >

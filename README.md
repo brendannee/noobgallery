@@ -5,7 +5,7 @@
 
 There is a gulp task included that takes a folder of folders that contain images and preps them and uploads them to Amazon S3 for use on a gallery website.
 
-It creates resized versions of all photos that are 1500px wide in a subfolder called `previews` and versions that are 200px wide in a subfolder called `thumbs`. It also summarizes each folder as a JSON file called `index.json` with image metadata and paths to images.
+It creates resized versions of all photos that are 3000px wide in a subfolder called `large`, 1500px wide in a subfolder called `previews` and 200px wide in a subfolder called `thumbs`. It also summarizes each folder as a JSON file called `index.json` with image metadata and paths to images.
 
 All of this is then uploaded to an Amazon S3 bucket you specify.
 
