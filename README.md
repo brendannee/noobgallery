@@ -11,6 +11,7 @@ Add a `.env` file with the following variables:
 GALLERY_LOCAL_PATH=~/path/to/your/gallery/root
 GALLERY_URL=http://url.to-your-s3-bucket.com
 GALLERY_TITLE=Your Gallery Name
+GALLERY_DESCRIPTION=Photos by a noob
 AWS_REGION=us-east-1
 AWS_BUCKET=yourbucket
 AWS_ACCESS_KEY=YOUR_AWS_ACCESS_KEY

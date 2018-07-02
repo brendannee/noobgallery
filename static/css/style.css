@@ -13,13 +13,19 @@ body {
 }
 
 .gallery-title {
-  margin: 30px 10px 10px;
+  margin: 15px 0 10px;
   color: #ffffff;
+}
+
+.gallery-description {
+  color: #FFFFFF;
+  margin: 0 0 15px;
+  font-size: 16px;
 }
 
 .breadcrumbs {
   color: #ddd;
-  margin: 0 10px 15px;
+  margin: -5px 10px 15px;
 }
 
 .breadcrumb {
@@ -38,7 +44,8 @@ a.breadcrumb:hover {
 }
 
 .gallery .grid-item {
-  margin-bottom: 10px;
+  margin: 0 10px 10px 0;
+  float: left;
 }
 
 .gallery .grid-item .photo-link {

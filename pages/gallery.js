@@ -51,7 +51,7 @@ export default class Index extends React.Component {
           <div id="lightgallery" className="grid gallery" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 300, "gutter": 10 }'>
             {this.props.images.map((image, key) => {
               const width = 300;
-              const height = Math.round(width / image.imageSize.width * image.imageSize.height).toString();
+              const height = Math.round(width / image.imageSize.width * image.imageSize.height);
               return (
                 <div
                   className="grid-item"
