@@ -1,5 +1,5 @@
 body {
-  background-color: #222222;
+  background-color: #000;
   font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0;
 }
@@ -10,22 +10,21 @@ body {
 
 .gallery-wrapper {
   margin: 25px;
+  min-height: 600px;
 }
 
 .gallery-title {
-  margin: 15px 0 10px;
+  margin: 15px 0 0;
   color: #ffffff;
 }
 
 .gallery-description {
-  color: #FFFFFF;
-  margin: 0 0 15px;
+  color: #ddd;
   font-size: 16px;
 }
 
 .breadcrumbs {
   color: #ddd;
-  margin: -5px 10px 15px;
 }
 
 .breadcrumb {
@@ -41,6 +40,10 @@ a.breadcrumb {
 a.breadcrumb:hover {
   color: #ddd;
   text-decoration: underline;
+}
+
+.gallery {
+  margin-top: 25px;
 }
 
 .gallery .grid-item {
@@ -91,11 +94,11 @@ a.breadcrumb:hover {
 
 footer {
   text-align: center;
-  color: #DDD;
+  color: #888;
   padding: 15px 0;
   clear: both;
 }
 
 footer a {
-  color: #DDD;
+  color: #888;
 }

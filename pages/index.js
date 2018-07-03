@@ -29,7 +29,6 @@ export default class Index extends React.Component {
           <div className="gallery-description">{process.env.GALLERY_DESCRIPTION}</div>
           <div id="lightgallery" className="grid gallery gallery-index" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 300, "gutter": 10 }'>
             {this.props.galleries.map((gallery, key) => {
-              console.log(gallery)
               const width = 300;
               const height = Math.round(width / gallery.imageSize.width * gallery.imageSize.height);
               return (
