@@ -23,20 +23,19 @@ export default class Index extends React.Component {
     const Masonry = require('masonry-layout')
     const imagesLoaded = require('imagesloaded')
 
-    const elem = document.querySelector('.grid');
-    const masonryLayout = new Masonry(elem, {
+    const masonryLayout = new Masonry(document.querySelector('.gallery'), {
       itemSelector: '.grid-item',
       columnWidth: '.grid-sizer',
       gutter: '.gutter-sizer',
       percentPosition: true
     })
 
-    imagesLoaded(document.querySelector('.grid'), () => {
+    imagesLoaded(document.querySelector('.gallery'), () => {
       masonryLayout.layout()
     })
 
     masonryLayout.on('layoutComplete', () => {
-      document.querySelector('.grid').classList.add('masonry')
+      document.querySelector('.gallery').classList.add('masonry')
     });
   }
 
@@ -50,10 +49,7 @@ export default class Index extends React.Component {
     }
 
     return (
-      <div
-        id="lightgallery"
-        className="grid gallery gallery-index"
-      >
+      <div className="gallery gallery-index">
         <div className="grid-sizer"></div>
         <div className="gutter-sizer"></div>
         {this.props.galleries.map((gallery, key) => {

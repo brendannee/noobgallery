@@ -7,7 +7,7 @@ export default ({ children, title = 'Wandering Noobs' }) => (
       <title>{ title }</title>
       <meta charSet='utf-8' />
       <meta name='viewport' content='initial-scale=1.0, width=device-width' />
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.11/dist/css/lightgallery.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.0.3/dist/css/lightgallery.min.css" />
       <link rel="stylesheet" href="/static/css/style.css" />
     </Head>
     <header>

@@ -1,6 +1,6 @@
 # noobgallery
 
-noobgallery is a photo gallery powered by [lightgallery](https://sachinchoolur.github.io/lightGallery/). It uses [nextjs](https://nextjs.org/) to serve pages and Amazon S3 to store and serve images.
+noobgallery is a photo gallery powered by [lightgallery.js](https://sachinchoolur.github.io/lightgallery.js/). It uses [nextjs](https://nextjs.org/) to serve pages and Amazon S3 to store and serve images.
 
 A helper gulp task is included to prep images and write summary JSON files to be uploaded to Amazon S3.
 
@@ -85,6 +85,7 @@ You can deploy this app to [now](https://zeit.co/now) easily:
 ## Credits
 
 Inspired by:
+* [lightgallery.js](https://sachinchoolur.github.io/lightgallery.js/)
 * [express-photo-gallery](https://github.com/timmydoza/express-photo-gallery)
 * [egp-prep](https://github.com/timmydoza/epg-prep)
 * [gulp-sharp-minimal](https://github.com/pupil-labs/gulp-sharp-minimal)
