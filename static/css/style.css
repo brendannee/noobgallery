@@ -2,10 +2,16 @@ body {
   background-color: #000;
   font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0;
+  color: #ffffff;
 }
 
 * {
   box-sizing: border-box;
+}
+
+.warning {
+  text-align: center;
+  margin-top: 100px;
 }
 
 .gallery-wrapper {
@@ -15,7 +21,6 @@ body {
 
 .gallery-title {
   margin: 15px 0 0;
-  color: #ffffff;
 }
 
 .gallery-description {
