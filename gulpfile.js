@@ -157,25 +157,28 @@ function summarizeFolder(folder) {
         lat,
         lng
       },
-      imageSize: exifData.imageSize
+      imageSize: exifData.imageSize,
+      isCover: image.toLowerCase().startsWith('cover')
     }
   }), ['createDate']);
 }
 
 function summarizeGallery() {
   return folders.map(folder => {
-    const images = JSON.parse(readFileSync(path.join(galleryLocation, folder, 'index.json'), 'utf8'));
+    const images = JSON.parse(readFileSync(path.join(galleryLocation, folder, 'index.json'), 'utf8'))
 
     const summary = {
       galleryId: folder
     }
 
     if (images && images.length) {
-      summary.src = images[0].src
-      summary.thumb = images[0].thumb
-      summary.medium = images[0].medium
-      summary.large = images[0].large
-      summary.imageSize = images[0].imageSize
+      const cover = _.find(images, {isCover: true}) || images[0]
+
+      summary.src = cover.src
+      summary.thumb = cover.thumb
+      summary.medium = cover.medium
+      summary.large = cover.large
+      summary.imageSize = cover.imageSize
     }
     return summary
   })
@@ -204,7 +207,7 @@ gulp.task('medium', () => {
     return gulp.src(path.join(galleryPath, extensionGlob), {nocase: true})
       .pipe(parallel(gulpSharp({
         resize: [mediumWidth, mediumWidth],
-        quality: 68,
+        quality: 88,
         rotate: true
       }), CORES))
       .pipe(rename(path => {
