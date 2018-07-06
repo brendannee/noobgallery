@@ -39,11 +39,12 @@ export default class Index extends React.Component {
     }
 
     const thumbnailWidth = 400
+    const galleryTitle = _.startCase(this.props.galleryId)
 
     return (
-      <Layout>
+      <Layout title={`${galleryTitle} - ${process.env.GALLERY_TITLE}`}>
         <div className="gallery-wrapper">
-          <h1 className="gallery-title">{_.startCase(this.props.galleryId)}</h1>
+          <h1 className="gallery-title">{galleryTitle}</h1>
           <div className="breadcrumbs">
             <a className="breadcrumb" href="/">Home</a>
             <span className="breadcrumb">&raquo;</span>
