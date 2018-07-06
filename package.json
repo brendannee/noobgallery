@@ -9,6 +9,13 @@
     "start": "NODE_ENV=production node server.js",
     "publish": "gulp"
   },
+  "keywords": [
+    "gallery",
+    "photography",
+    "node.js",
+    "nextjs",
+    "Amazon S3"
+  ],
   "private": false,
   "author": "Brendan Nee <brendan@blinktag.com>",
   "license": "MIT",

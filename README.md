@@ -37,6 +37,12 @@ To run the preprocessing and publishing task:
 
 If your `.env` file is has the correct variables, images will be processed locally and the results will be uploaded to Amazon S3.
 
+## Deploying
+
+You can deploy this app to [now](https://zeit.co/now) easily:
+
+    now --dotenv
+
 ## Credits
 
 Inspired by:
