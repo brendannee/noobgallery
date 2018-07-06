@@ -238,18 +238,16 @@ gulp.task('thumbs', () => {
 gulp.task('summarize', () => {
   return mergeStream(folders.map(folder => {
     const galleryPath = path.join(galleryLocation, folder);
-    return gulp.src(galleryPath, {nocase: true})
-       .pipe(parallel(file('index.json', JSON.stringify(summarizeFolder(folder)))), CORES)
-       .pipe(gulp.dest('.', {cwd: galleryPath}))
-       .pipe(debug({title: 'Created summary JSON'}));
+    return file('index.json', JSON.stringify(summarizeFolder(folder)), {src: true})
+      .pipe(gulp.dest(galleryPath))
+      .pipe(debug({title: 'Created summary JSON'}));
   }));
 });
 
 gulp.task('summarizeGalleries', () => {
-  return gulp.src(galleryLocation, {nocase: true})
-     .pipe(parallel(file('index.json', JSON.stringify(summarizeGallery()))), CORES)
-     .pipe(gulp.dest('.', {cwd: galleryLocation}))
-     .pipe(debug({title: 'Created gallery summary JSON'}));
+  return file('index.json', JSON.stringify(summarizeGallery()), {src: true})
+    .pipe(gulp.dest(galleryLocation))
+    .pipe(debug({title: 'Created gallery summary JSON'}));
 });
 
 gulp.task('publish', () => {
