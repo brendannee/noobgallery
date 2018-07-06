@@ -8,8 +8,9 @@ export default class Index extends React.Component {
   static async getInitialProps() {
 
     try {
-      const minute = Math.floor(Date.now() / (60 * 1000))
-      const res = await fetch(`${process.env.GALLERY_URL}/index.json?ts=${minute}`)
+      // Force new json every 5 minutes
+      const ts = Math.floor(Date.now() / (5 * 60 * 1000))
+      const res = await fetch(`${process.env.GALLERY_URL}/index.json?ts=${ts}`)
       const json = await res.json()
       return {galleries: json}
     } catch(err) {

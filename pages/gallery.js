@@ -8,7 +8,9 @@ import _ from 'lodash'
 export default class Index extends React.Component {
   static async getInitialProps({ query: { id } }) {
     try {
-      const res = await fetch(`${process.env.GALLERY_URL}/${id}/index.json`)
+      // Force new json every 5 minutes
+      const ts = Math.floor(Date.now() / (5 * 60 * 1000))
+      const res = await fetch(`${process.env.GALLERY_URL}/${id}/index.json?ts=${ts}`)
       const json = await res.json()
       return {images: json, galleryId: id}
     } catch(err) {
