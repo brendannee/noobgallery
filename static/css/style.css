@@ -51,9 +51,93 @@ a.breadcrumb:hover {
   margin-top: 25px;
 }
 
+/* gallery layout pre-masonry load */
 .gallery .grid-item {
-  margin: 0 10px 10px 0;
+  margin-right: 10px;
   float: left;
+}
+
+/* gallery layout post-masonry load */
+.gallery.masonry .grid-item {
+  margin-right: 0;
+  float: none;
+}
+
+/* 1 columns for mobile */
+.gallery .grid-sizer,
+.gallery .grid-item {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.gallery .gutter-sizer {
+  width: 0%;
+}
+
+@media screen and (min-width: 768px) {
+  /* 2 columns for small screens */
+  .gallery .grid-sizer,
+  .gallery .grid-item {
+    width: 49.5%;
+  }
+
+  .gallery .grid-item--width2 {
+    width: 100%;
+  }
+
+  .gallery .gutter-sizer {
+    width: 1%;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  /* 3 columns for medium screens */
+  .gallery .grid-sizer,
+  .gallery .grid-item {
+    width: 32.66%;
+  }
+
+  .gallery .grid-item--width2 {
+    width: 66.33%;
+  }
+
+  .gallery .gutter-sizer {
+    width: 1%;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  /* 4 columns for large screens */
+  .gallery .grid-sizer,
+  .gallery .grid-item {
+    width: 24.25%;
+    margin-bottom: 15px;
+  }
+
+  .gallery .grid-item--width2 {
+    width: 49.5%;
+  }
+
+  .gallery .gutter-sizer {
+    width: 1%;
+  }
+}
+
+@media screen and (min-width: 1600px) {
+  /* 5 columns for larger screens */
+  .gallery .grid-sizer,
+  .gallery .grid-item {
+    width: 19.2%;
+    margin-bottom: 18px;
+  }
+
+  .gallery .grid-item--width2 {
+    width: 39.4%;
+  }
+
+  .gallery .gutter-sizer {
+    width: 1%;
+  }
 }
 
 .gallery .grid-item .photo-link {
@@ -68,7 +152,6 @@ a.breadcrumb:hover {
   border-bottom-right-radius: 0;
 }
 
-
 .gallery .grid-item .photo-link > img {
   -webkit-transition: -webkit-transform 0.15s ease 0s;
   -moz-transition: -moz-transform 0.15s ease 0s;
@@ -77,6 +160,7 @@ a.breadcrumb:hover {
   -webkit-transform: scale3d(1, 1, 1);
   transform: scale3d(1, 1, 1);
   display: block;
+  width: 100%;
 }
 
 .gallery .grid-item a.photo-link:hover > img {

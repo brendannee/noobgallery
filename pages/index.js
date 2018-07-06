@@ -20,7 +20,24 @@ export default class Index extends React.Component {
   }
 
   componentDidMount() {
-    const masonry = require('masonry-layout')
+    const Masonry = require('masonry-layout')
+    const imagesLoaded = require('imagesloaded')
+
+    const elem = document.querySelector('.grid');
+    const masonryLayout = new Masonry(elem, {
+      itemSelector: '.grid-item',
+      columnWidth: '.grid-sizer',
+      gutter: '.gutter-sizer',
+      percentPosition: true
+    })
+
+    imagesLoaded(document.querySelector('.grid'), () => {
+      masonryLayout.layout()
+    })
+
+    masonryLayout.on('layoutComplete', () => {
+      document.querySelector('.grid').classList.add('masonry')
+    });
   }
 
   renderGallery() {
@@ -32,29 +49,22 @@ export default class Index extends React.Component {
       )
     }
 
-    const thumbnailWidth = 400
-
     return (
       <div
         id="lightgallery"
         className="grid gallery gallery-index"
-        data-masonry={`{ "itemSelector": ".grid-item", "columnWidth": ${thumbnailWidth}, "gutter": 10 }`}
       >
+        <div className="grid-sizer"></div>
+        <div className="gutter-sizer"></div>
         {this.props.galleries.map((gallery, key) => {
-          const height = Math.round(thumbnailWidth / gallery.imageSize.width * gallery.imageSize.height);
           return (
             <div
-              className="grid-item"
+              className={`grid-item ${gallery.imageSize.width > gallery.imageSize.height * 2 ? 'grid-item--width2' : ''}`}
               key={key}
-              style={{width: `${thumbnailWidth}px`, height: `${height + 40}px`}}
             >
-              <Link href={`/gallery/${gallery.galleryId}/`} >
+              <Link href={`/gallery/${gallery.galleryId}/`}>
                 <a className="photo-link">
-                  <img
-                    src={`${process.env.GALLERY_URL}/${gallery.medium}`}
-                    width={thumbnailWidth}
-                    height={height}
-                  />
+                  <img src={`${process.env.GALLERY_URL}/${gallery.medium}`} />
                 </a>
               </Link>
               <Link href={`/gallery/${gallery.galleryId}/`} >
