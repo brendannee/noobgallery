@@ -25,7 +25,7 @@ const extensionGlob = `/*.{${imageExtensions.join(',')}}`;
 console.log(`Preparing: ${galleryLocation}`);
 
 const largeWidth = 3000;
-const mediumWidth = 600;
+const mediumWidth = 800;
 const thumbWidth = 200;
 
 function gulpSharp(options){

@@ -36,9 +36,11 @@ export default class Index extends React.Component {
       return <Error statusCode={404} />
     }
 
+    const thumbnailWidth = 400
+
     return (
       <Layout>
-        <div class="gallery-wrapper">
+        <div className="gallery-wrapper">
           <h1 className="gallery-title">{_.startCase(this.props.galleryId)}</h1>
           <div className="breadcrumbs">
             <a className="breadcrumb" href="/">Home</a>
@@ -48,10 +50,13 @@ export default class Index extends React.Component {
               href={`/gallery/${this.props.galleryId}/`}
             >{_.startCase(this.props.galleryId)}</a>
           </div>
-          <div id="lightgallery" className="grid gallery" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 300, "gutter": 10 }'>
+          <div
+            id="lightgallery"
+            className="grid gallery"
+            data-masonry={`{ "itemSelector": ".grid-item", "columnWidth": ${thumbnailWidth}, "gutter": 10 }`}
+          >
             {this.props.images.map((image, key) => {
-              const width = 300;
-              const height = Math.round(width / image.imageSize.width * image.imageSize.height);
+              const height = Math.round(thumbnailWidth / image.imageSize.width * image.imageSize.height);
               return (
                 <div
                   className="grid-item"
@@ -63,11 +68,11 @@ export default class Index extends React.Component {
                   <a
                     href=""
                     className="photo-link"
-                    style={{width: `${width}px`, height: `${height}px`}}
+                    style={{width: `${thumbnailWidth}px`, height: `${height}px`}}
                   >
                     <img
                       src={`${process.env.GALLERY_URL}/${image.medium}`}
-                      width={width}
+                      width={thumbnailWidth}
                       height={height}
                     />
                   </a>

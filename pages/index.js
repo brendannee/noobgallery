@@ -22,26 +22,30 @@ export default class Index extends React.Component {
   }
 
   render() {
+    const thumbnailWidth = 400
     return (
       <Layout>
-        <div class="gallery-wrapper">
+        <div className="gallery-wrapper">
           <h1 className="gallery-title">{process.env.GALLERY_TITLE}</h1>
           <div className="gallery-description">{process.env.GALLERY_DESCRIPTION}</div>
-          <div id="lightgallery" className="grid gallery gallery-index" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 300, "gutter": 10 }'>
+          <div
+            id="lightgallery"
+            className="grid gallery gallery-index"
+            data-masonry={`{ "itemSelector": ".grid-item", "columnWidth": ${thumbnailWidth}, "gutter": 10 }`}
+          >
             {this.props.galleries.map((gallery, key) => {
-              const width = 300;
-              const height = Math.round(width / gallery.imageSize.width * gallery.imageSize.height);
+              const height = Math.round(thumbnailWidth / gallery.imageSize.width * gallery.imageSize.height);
               return (
                 <div
                   className="grid-item"
                   key={key}
-                  style={{width: `${width}px`, height: `${height + 40}px`}}
+                  style={{width: `${thumbnailWidth}px`, height: `${height + 40}px`}}
                 >
                   <Link href={`/gallery/${gallery.galleryId}/`} >
                     <a className="photo-link">
                       <img
                         src={`${process.env.GALLERY_URL}/${gallery.medium}`}
-                        width={width}
+                        width={thumbnailWidth}
                         height={height}
                       />
                     </a>
