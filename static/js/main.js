@@ -1,3 +1,14 @@
+function setImageHeight() {
+  document.querySelectorAll('.grid-item img').forEach(image => {
+    const height = Math.round(image.offsetWidth / image.dataset.aspectRatio)
+    image.setAttribute('height', height)
+  })
+}
+
+// Set image height on page load and on resize
+setImageHeight()
+window.addEventListener('resize', setImageHeight)
+
 const masonryLayout = new Masonry(document.querySelector('.gallery'), {
   itemSelector: '.grid-item',
   columnWidth: '.grid-sizer',
@@ -18,14 +29,3 @@ if (typeof lightGallery !== 'undefined') {
     selector: '.grid-item'
   })
 }
-
-function setImageHeight() {
-  document.querySelectorAll('.grid-item img').forEach(image => {
-    const height = Math.round(image.offsetWidth / image.dataset.aspectRatio)
-    image.setAttribute('height', height)
-  })
-}
-
-// Set image height on page load and on resize
-setImageHeight()
-window.addEventListener('resize', setImageHeight)
