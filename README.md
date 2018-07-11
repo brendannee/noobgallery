@@ -40,6 +40,7 @@ If you want to specify which image should be the cover representing an entire ga
 Example directory structure:
 
     gallery_root_folder
+    ├── favicon.ico
     ├── new_york
     │   ├── cover.jpg
     │   ├── file2.jpg
@@ -51,7 +52,9 @@ Example directory structure:
 
 If an image has an IPTC `object_name` set, this will be used as the photo title and the IPTC `caption` will be used as the photo description. If this information isn't set, no title or description will be shown.
 
-## Preprocessing andrunning locally
+Optionally, you can include a `favicon.ico` file in your gallery root folder.
+
+## Preprocessing and running locally
 
 A preprocessing and publishing task is included that takes a folder of folders that contain images and preps them and uploads them to Amazon S3 for use on a gallery website.
 

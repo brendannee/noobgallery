@@ -351,6 +351,12 @@ gulp.task('copyStatic', () => {
   .pipe(debug({title: 'Copied static files'}));
 });
 
+gulp.task('favicon', () => {
+  return gulp.src(path.join(gallerySource, 'favicon.ico'), {allowEmpty: true})
+    .pipe(gulp.dest(galleryTemp))
+    .pipe(debug({title: 'Copied favicon'}));
+});
+
 gulp.task('publishAWS', () => {
   const publisher = awspublish.create({
     region: process.env.AWS_REGION,
@@ -378,7 +384,7 @@ gulp.task('clean', () => {
 
 gulp.task('resize', gulp.parallel('large', 'medium', 'thumbs'));
 
-gulp.task('html', gulp.series('galleryHtml', gulp.parallel('indexHtml', 'copyStatic')))
+gulp.task('html', gulp.series('galleryHtml', gulp.parallel('indexHtml', 'copyStatic', 'favicon')))
 
 gulp.task('build', gulp.series('copyOriginals', 'resize', 'html'));
 
