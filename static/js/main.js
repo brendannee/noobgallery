@@ -11,23 +11,21 @@ imagesLoaded(document.querySelector('.gallery'), () => {
 
 masonryLayout.on('layoutComplete', () => {
   document.querySelector('.gallery').classList.add('masonry')
-});
-
-lightGallery(document.getElementById('lightgallery'), {
-  selector: '.grid-item'
 })
+
+if (typeof lightGallery !== 'undefined') {
+  lightGallery(document.getElementById('lightgallery'), {
+    selector: '.grid-item'
+  })
+}
 
 function setImageHeight() {
   document.querySelectorAll('.grid-item img').forEach(image => {
-    console.log(image)
-
-    const height = Math.round(image.offsetWidth / image.dataset.aspectRatio);
-
-    image.setAttribute('height', height);
-  });
+    const height = Math.round(image.offsetWidth / image.dataset.aspectRatio)
+    image.setAttribute('height', height)
+  })
 }
 
-// Set image height on page load
-setImageHeight();
-
-window.addEventListener('resize', setImageHeight);
+// Set image height on page load and on resize
+setImageHeight()
+window.addEventListener('resize', setImageHeight)
