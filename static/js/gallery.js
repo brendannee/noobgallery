@@ -16,3 +16,18 @@ masonryLayout.on('layoutComplete', () => {
 lightGallery(document.getElementById('lightgallery'), {
   selector: '.grid-item'
 })
+
+function setImageHeight() {
+  document.querySelectorAll('.grid-item img').forEach(image => {
+    console.log(image)
+
+    const height = Math.round(image.offsetWidth / image.dataset.aspectRatio);
+
+    image.setAttribute('height', height);
+  });
+}
+
+// Set image height on page load
+setImageHeight();
+
+window.addEventListener('resize', setImageHeight);
