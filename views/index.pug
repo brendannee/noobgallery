@@ -10,7 +10,7 @@ block content
         div(class=`grid-item ${gallery.imageSize.width > gallery.imageSize.height * 2 ? 'grid-item--width2' : ''}`)
           a.photo-link(href=`gallery/${gallery.galleryId}/`)
             img(src=`gallery/${gallery.galleryId}/${gallery.medium}` data-aspect-ratio=`${gallery.imageSize.width/gallery.imageSize.height}`)
-          a.photo-link-title(href=`gallery/${gallery.galleryId}/`)= _.startCase(gallery.galleryId)
+            .photo-link-title= _.startCase(gallery.galleryId)
   
   script(src=`${config.assetPath}/masonry-layout/masonry.pkgd.min.js`)
   script(src=`${config.assetPath}/imagesloaded/imagesloaded.pkgd.min.js`)
