@@ -17,12 +17,15 @@ const exif = require('exif-parser');
 const _ = require('lodash');
 const through = require('through2');
 const sharp = require('sharp');
+const del = require('del');
+const pug = require('gulp-pug');
 
-const galleryLocation = untildify(process.env.GALLERY_LOCAL_PATH);
+const gallerySource = untildify(process.env.GALLERY_LOCAL_PATH);
+const galleryTemp = './build';
 const imageExtensions = ['png','gif','jpeg','jpg','bmp'];
 const extensionGlob = `/*.{${imageExtensions.join(',')}}`;
 
-console.log(`Preparing: ${galleryLocation}`);
+console.log(`Preparing: ${gallerySource}`);
 
 const largeWidth = 3000;
 const mediumWidth = 800;
@@ -103,12 +106,12 @@ function gulpSharp(options){
   });
 }
 
-const folders = readdirSync(galleryLocation).filter(file => {
-  return statSync(path.join(galleryLocation, file)).isDirectory();
+const folders = readdirSync(gallerySource).filter(file => {
+  return statSync(path.join(gallerySource, file)).isDirectory();
 });
 
 function summarizeFolder(folder) {
-  const galleryPath = path.join(galleryLocation, folder, 'large');
+  const galleryPath = path.join(galleryTemp, 'gallery', folder, 'large');
   const images = readdirSync(galleryPath).filter(file => {
     const filePath = path.join(galleryPath, file);
     if (statSync(filePath).isDirectory()) {
@@ -147,10 +150,10 @@ function summarizeFolder(folder) {
     }
 
     return {
-      src: `${folder}/${image}`,
-      thumb: `${folder}/thumbs/${image}`,
-      medium: `${folder}/medium/${image}`,
-      large: `${folder}/large/${image}`,
+      src: `${image}`,
+      thumb: `thumbs/${image}`,
+      medium: `medium/${image}`,
+      large: `large/${image}`,
       createDate,
       subHtml,
       location: {
@@ -165,7 +168,7 @@ function summarizeFolder(folder) {
 
 function summarizeGallery() {
   return folders.map(folder => {
-    const images = JSON.parse(readFileSync(path.join(galleryLocation, folder, 'index.json'), 'utf8'))
+    const images = JSON.parse(readFileSync(path.join(galleryTemp, 'gallery', folder, 'index.json'), 'utf8'))
 
     const summary = {
       galleryId: folder
@@ -184,9 +187,15 @@ function summarizeGallery() {
   })
 }
 
+gulp.task('copyOriginals', () => {
+  return gulp.src(path.join(gallerySource, '**', extensionGlob), {nocase: true})
+    .pipe(gulp.dest(path.join(galleryTemp, 'gallery')))
+    .pipe(debug({title: 'Copied full versions of photos'}));
+});
+
 gulp.task('large', () => {
   return mergeStream(folders.map(folder => {
-    const galleryPath = path.join(galleryLocation, folder);
+    const galleryPath = path.join(galleryTemp, 'gallery', folder);
     return gulp.src(path.join(galleryPath, extensionGlob), {nocase: true})
       .pipe(parallel(gulpSharp({
         resize: [largeWidth, largeWidth],
@@ -203,7 +212,7 @@ gulp.task('large', () => {
 
 gulp.task('medium', () => {
   return mergeStream(folders.map(folder => {
-    const galleryPath = path.join(galleryLocation, folder);
+    const galleryPath = path.join(galleryTemp, 'gallery', folder);
     return gulp.src(path.join(galleryPath, extensionGlob), {nocase: true})
       .pipe(parallel(gulpSharp({
         resize: [mediumWidth, mediumWidth],
@@ -220,7 +229,7 @@ gulp.task('medium', () => {
 
 gulp.task('thumbs', () => {
   return mergeStream(folders.map(folder => {
-    const galleryPath = path.join(galleryLocation, folder);
+    const galleryPath = path.join(galleryTemp, 'gallery', folder);
     return gulp.src(path.join(galleryPath, 'medium', extensionGlob), {nocase: true})
       .pipe(parallel(gulpSharp({
         resize: [thumbWidth, thumbWidth],
@@ -235,22 +244,114 @@ gulp.task('thumbs', () => {
   }));
 });
 
-gulp.task('summarize', () => {
-  return mergeStream(folders.map(folder => {
-    const galleryPath = path.join(galleryLocation, folder);
-    return file('index.json', JSON.stringify(summarizeFolder(folder)), {src: true})
-      .pipe(gulp.dest(galleryPath))
-      .pipe(debug({title: 'Created summary JSON'}));
-  }));
+gulp.task('galleryHtml', () => {
+  return mergeStream(_.flatten(folders.map(folder => {
+    const galleryPath = path.join(galleryTemp, 'gallery', folder);
+    const images = summarizeFolder(folder);
+    const pugConfig = {
+      locals: {
+        _
+      },
+      data: {
+        config: {
+          galleryDescription: process.env.GALLERY_DESCRIPTION,
+          assetPath: '../../static'
+        },
+        images,
+        galleryId: folder,
+        galleryTitle: `${_.startCase(folder)} - ${process.env.GALLERY_TITLE}`,
+        title: `${_.startCase(folder)} - ${process.env.GALLERY_TITLE}`
+      }
+    };
+
+    return [
+      gulp.src('views/gallery.pug')
+        .pipe(rename('index.html'))
+        .pipe(pug(pugConfig))
+        .pipe(gulp.dest(galleryPath))
+        .pipe(debug({title: 'Created gallery HTML'})),
+      file('index.json', JSON.stringify(images), {src: true})
+        .pipe(gulp.dest(galleryPath))
+    ];
+  })));
 });
 
-gulp.task('summarizeGalleries', () => {
-  return file('index.json', JSON.stringify(summarizeGallery()), {src: true})
-    .pipe(gulp.dest(galleryLocation))
-    .pipe(debug({title: 'Created gallery summary JSON'}));
+gulp.task('indexHtml', () => {
+  return gulp.src('views/{index,error}.pug')
+    .pipe(pug({
+      locals: {
+        _
+      },
+      data: {
+        config: {
+          assetPath: './static'
+        },
+        galleries: summarizeGallery(),
+        galleryTitle: process.env.GALLERY_TITLE,
+        title: process.env.GALLERY_TITLE,
+        description: process.env.GALLERY_DESCRIPTION
+      }
+    }))
+    .pipe(gulp.dest(galleryTemp))
+    .pipe(debug({title: 'Created gallery index HTML'}));
 });
 
-gulp.task('publish', () => {
+gulp.task('copyStatic', () => {
+  const libraries = [
+    {
+      src: './static/**/*.*',
+      dest: path.join(galleryTemp, 'static')
+    },
+    {
+      src: './node_modules/lightgallery.js/dist/**/*.*',
+      dest: path.join(galleryTemp, 'static', 'lightgallery.js')
+    },
+    {
+      src: './node_modules/lg-thumbnail.js/dist/**/*.*',
+      dest: path.join(galleryTemp, 'static', 'lg-thumbnail.js')
+    },
+    {
+      src: './node_modules/lg-autoplay.js/dist/**/*.*',
+      dest: path.join(galleryTemp, 'static', 'lg-autoplay.js')
+    },
+    {
+      src: './node_modules/lg-fullscreen.js/dist/**/*.*',
+      dest: path.join(galleryTemp, 'static', 'lg-fullscreen.js')
+    },
+    {
+      src: './node_modules/lg-pager.js/dist/**/*.*',
+      dest: path.join(galleryTemp, 'static', 'lg-pager.js')
+    },
+    {
+      src: './node_modules/lg-zoom.js/dist/**/*.*',
+      dest: path.join(galleryTemp, 'static', 'lg-zoom.js')
+    },
+    {
+      src: './node_modules/lg-hash.js/dist/**/*.*',
+      dest: path.join(galleryTemp, 'static', 'lg-hash.js')
+    },
+    {
+      src: './node_modules/lg-share.js/dist/**/*.*',
+      dest: path.join(galleryTemp, 'static', 'lg-share.js')
+    },
+    {
+      src: './node_modules/masonry-layout/dist/**/*.*',
+      dest: path.join(galleryTemp, 'static', 'masonry-layout')
+    },
+    {
+      src: './node_modules/imagesloaded/imagesloaded.pkgd.min.js',
+      dest: path.join(galleryTemp, 'static', 'imagesloaded')
+    }
+  ]
+
+  return mergeStream(libraries.map(library => {
+    return gulp.src(library.src)
+      .pipe(gulp.dest(library.dest));
+  }))
+  .pipe(debug({title: 'Copied static files'}));
+});
+
+gulp.task('publishAWS', () => {
   const publisher = awspublish.create({
     region: process.env.AWS_REGION,
     params: {
@@ -264,13 +365,21 @@ gulp.task('publish', () => {
     'Cache-Control': 'max-age=315360000, no-transform, public'
   };
 
-  return gulp.src(path.join(galleryLocation, '/**/*'))
+  return gulp.src(path.join(galleryTemp, '/**/*'))
     .pipe(parallel(awspublish.gzip(), CORES))
     .pipe(parallel(publisher.publish(headers), CORES))
     .pipe(publisher.cache())
     .pipe(awspublish.reporter());
 });
 
-gulp.task('resize', gulp.series('large', 'medium', 'thumbs'));
+gulp.task('clean', () => {
+   return del(galleryTemp);
+});
 
-gulp.task('default', gulp.series('resize', 'summarize', 'summarizeGalleries', 'publish'));
+gulp.task('resize', gulp.parallel('large', 'medium', 'thumbs'));
+
+gulp.task('html', gulp.series('galleryHtml', gulp.parallel('indexHtml', 'copyStatic')))
+
+gulp.task('build', gulp.series('copyOriginals', 'resize', 'html'));
+
+gulp.task('publish', gulp.series('build', 'publishAWS'));

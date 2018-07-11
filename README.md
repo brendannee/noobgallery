@@ -1,8 +1,6 @@
 # noobgallery
 
-noobgallery is a photo gallery powered by [lightgallery.js](https://sachinchoolur.github.io/lightgallery.js/). It uses [nextjs](https://nextjs.org/) to serve pages and Amazon S3 to store and serve images.
-
-A helper gulp task is included to prep images and write summary JSON files to be uploaded to Amazon S3.
+noobgallery is a static photo gallery powered by [lightgallery.js](https://sachinchoolur.github.io/lightgallery.js/). It can be deployed to Amazon S3, which allows a huge amount of storage. (around $0.02/GB per month).
 
 You can see noobgallery in action at https://wanderingnoobs.com.
 
@@ -12,7 +10,7 @@ noobgallery uses Amazon S3 to host images. You'll need to:
 
 * Create an Amazon S3 bucket.
 * Set the bucket to be publicly readable.
-* Enable static website hosting on the bucket, use `index.json` as the index document. Note the bucket URL.
+* Enable static website hosting on the bucket, use `index.html` as the index document. Note the bucket URL.
 * Create an IAM user with AmazonS3FullAccess permission programatic access to the S3 bucket and get the Access key id and secret access key.
 
 Add a `.env` file with the following variables:
@@ -20,13 +18,10 @@ Add a `.env` file with the following variables:
     GALLERY_TITLE=Your Gallery Name
     GALLERY_DESCRIPTION=Photos by a noob
     GALLERY_LOCAL_PATH=~/path/to/your/gallery/root
-    GALLERY_URL=http://url.to-your-s3-bucket.com
     AWS_REGION=us-east-1
     AWS_BUCKET=yourbucketname
     AWS_ACCESS_KEY=YOUR_AWS_ACCESS_KEY
     AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET KEY
-
-Be sure the `GALLERY_URL` does not have a trailing slash.
 
 ## Setup
 
@@ -56,31 +51,34 @@ Example directory structure:
 
 If an image has an IPTC `object_name` set, this will be used as the photo title and the IPTC `caption` will be used as the photo description. If this information isn't set, no title or description will be shown.
 
-## Preprocessing and publishing images
+## Preprocessing andrunning locally
 
 A preprocessing and publishing task is included that takes a folder of folders that contain images and preps them and uploads them to Amazon S3 for use on a gallery website.
 
 It creates resized versions of all photos that are 3000px wide in a subfolder called `large`, 800px wide in a subfolder called `medium` and 200px wide in a subfolder called `thumbs`. It also summarizes each folder as a JSON file called `index.json` with image metadata and paths to images.
 
-All of this is then uploaded to an Amazon S3 bucket you specify.
+To run the preprocessing task:
 
-To run the preprocessing and publishing task:
+    npm run build
 
-    npm run publish
+If your `.env` file is has the correct variables, images will be processed locally and moved to the `./build` folder inside of this project.
 
-If your `.env` file is has the correct variables, images will be processed locally and the results will be uploaded to Amazon S3.
+To run locally
 
-## Running locally
+    npm start
 
-    npm run dev
-
-Open http://localhost:3000 in your browser.
+Open http://localhost:5000 in your browser.
 
 ## Deploying
 
-You can deploy this app to [now](https://zeit.co/now) easily:
+You can deploy the site to Amazon S3 with:
 
-    now --dotenv
+    npm publish
+
+This will work as long as you specify your AWS S3 credentials in a `.env` file.
+
+After publishing, you can view your gallery using the AWS S3 URL you set up, which can be a custom domain name that you own. See more about [static hosting with Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html).
+
 
 ## Credits
 
