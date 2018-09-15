@@ -76,7 +76,7 @@ Open http://localhost:5000 in your browser.
 
 You can deploy the site to Amazon S3 with:
 
-    npm publish
+    npm run deploy
 
 This will work as long as you specify your AWS S3 credentials in a `.env` file.
 

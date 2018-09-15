@@ -396,4 +396,4 @@ gulp.task('html', gulp.series('galleryHtml', gulp.parallel('indexHtml', 'copySta
 
 gulp.task('build', gulp.series('copyOriginals', 'resize', 'html'));
 
-gulp.task('publish', gulp.series('build', 'publishAWS'));
+gulp.task('deploy', gulp.series('build', 'publishAWS'));
