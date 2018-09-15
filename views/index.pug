@@ -8,7 +8,7 @@ block content
       .gutter-sizer
       each gallery in galleries
         div(class=`grid-item ${gallery.imageSize.width > gallery.imageSize.height * 2 ? 'grid-item--width2' : ''}`)
-          a.photo-link(href=`gallery/${gallery.galleryId}/`)
+          a.photo-link(href=`gallery/${gallery.galleryId}/${config.useIndexFile !== 'false' ? 'index.html' : ''}`)
             img(src=`gallery/${gallery.galleryId}/${gallery.medium}` data-aspect-ratio=`${gallery.imageSize.width/gallery.imageSize.height}`)
             .photo-link-title= _.startCase(gallery.galleryId)
   

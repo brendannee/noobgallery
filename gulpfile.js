@@ -284,7 +284,8 @@ gulp.task('indexHtml', () => {
       },
       data: {
         config: {
-          assetPath: './static'
+          assetPath: './static',
+          useIndexFile: process.env.USE_INDEX_FILE
         },
         galleries: summarizeGallery(),
         galleryTitle: process.env.GALLERY_TITLE,

@@ -22,6 +22,7 @@ Add a `.env` file with the following variables:
     AWS_BUCKET=yourbucketname
     AWS_ACCESS_KEY=YOUR_AWS_ACCESS_KEY
     AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET KEY
+    USE_INDEX_FILE=true
 
 ## Setup
 
@@ -82,6 +83,7 @@ This will work as long as you specify your AWS S3 credentials in a `.env` file.
 
 After publishing, you can view your gallery using the AWS S3 URL you set up, which can be a custom domain name that you own. See more about [static hosting with Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html).
 
+If you want cleaner URLs, you can set up [Amazon CloudFront CDN and setup a Lambda@Edge function to set subdirectory indexes](https://aws.amazon.com/blogs/compute/implementing-default-directory-indexes-in-amazon-s3-backed-amazon-cloudfront-origins-using-lambdaedge/). If you do this, you can set `USE_INDEX_FILE` to false in the `.env` file and `index.html` will be removed from all links.
 
 ## Credits
 
