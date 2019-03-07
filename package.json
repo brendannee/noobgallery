@@ -1,6 +1,6 @@
 {
   "name": "noobgallery",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A minimalistic photo gallery with images stored on Amazon S3 and just the features you want.",
   "main": "index.js",
   "scripts": {
@@ -20,11 +20,11 @@
   "license": "MIT",
   "dependencies": {
     "concurrent-transform": "^1.0.0",
-    "del": "^3.0.0",
+    "del": "^4.0.0",
     "dotenv": "^6.0.0",
     "exif-parser": "^0.1.12",
     "gulp": "^4.0.0",
-    "gulp-awspublish": "^3.3.3",
+    "gulp-awspublish": "^4.0.0",
     "gulp-debug": "^4.0.0",
     "gulp-file": "^0.4.0",
     "gulp-pug": "^4.0.1",
@@ -42,10 +42,10 @@
     "lodash": "^4.17.11",
     "masonry-layout": "^4.2.2",
     "merge-stream": "^1.0.1",
-    "node-iptc": "^1.0.5",
     "serve": "^10.0.1",
-    "sharp": "^0.20.8",
-    "through2": "^2.0.3",
-    "untildify": "^3.0.3"
+    "sharp": "^0.21.3",
+    "through2": "^3.0.1",
+    "untildify": "^3.0.3",
+    "xmp-reader": "0.0.3"
   }
 }

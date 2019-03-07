@@ -1,6 +1,8 @@
 require('dotenv').config()
 
 const path = require('path');
+const util = require('util');
+const stream = require('stream');
 const untildify = require('untildify');
 const { readdirSync, statSync, readFileSync } = require('fs');
 const gulp = require('gulp');
@@ -12,13 +14,14 @@ const rename = require('gulp-rename');
 const gutil = require('gulp-util');
 const awspublish = require('gulp-awspublish');
 const CORES = require('os').cpus().length;
-const iptc = require('node-iptc');
+const xmpReader = require('xmp-reader');
 const exif = require('exif-parser');
 const _ = require('lodash');
 const through = require('through2');
 const sharp = require('sharp');
 const del = require('del');
 const pug = require('gulp-pug');
+const pipeline = util.promisify(stream.pipeline);
 
 const gallerySource = untildify(process.env.GALLERY_LOCAL_PATH);
 const galleryTemp = './build';
@@ -55,50 +58,17 @@ function gulpSharp(options){
       const image = sharp(file.contents);
 
       image
-        .metadata()
-        .then(function(metadata){
-          return image
-            .rotate()
-            .resize(...options.resize)
-            .max()
-            .withoutEnlargement()
-            .jpeg({quality: options.quality || 80})
-            .toBuffer()
-        })
-        .then(function(data){
-          if (options.progressive){
-            image.progressive()
-          }
-
-          if (options.stripMetadata){
-            // if true - then we keep all EXIF data of image
-            // otherwise default behavior is to strip it all
-            image.withMetadata();
-          }
-          return image;
-        })
-
-        .then(function(sequentialRead){
-          if (options.sequentialRead){
-            image.sequentialRead()
-          }
-          return image;
-
-         })
-
-        .then(function(trellisQuantisation){
-          if (options.trellisQuantisation){
-            image.trellisQuantisation()
-          }
-          return image;
-        })
-
+        .withMetadata()
+        .rotate()
+        .resize(options.resize)
+        .jpeg({quality: options.quality || 80})
+        .toBuffer()
         .then(function(data) {
           const newFile = new gutil.File({
             cwd: file.cwd,
             base: file.base,
             path: file.path,
-            contents: image
+            contents: data
           });
           callback(null, newFile);
       });
@@ -110,7 +80,7 @@ const folders = readdirSync(gallerySource).filter(file => {
   return statSync(path.join(gallerySource, file)).isDirectory();
 });
 
-function summarizeFolder(folder) {
+const summarizeFolder = async folder => {
   const galleryPath = path.join(galleryTemp, 'gallery', folder, 'large');
   const images = readdirSync(galleryPath).filter(file => {
     const filePath = path.join(galleryPath, file);
@@ -120,17 +90,22 @@ function summarizeFolder(folder) {
     return imageExtensions.includes(path.extname(filePath).toLowerCase().substr(1))
   });
 
-  return _.sortBy(images.map(image => {
-    const buffer = readFileSync(path.join(galleryPath, image));
-    const iptcData = iptc(buffer);
 
+  const imageDatas = await Promise.all(images.map(async image => {
+    const buffer = readFileSync(path.join(galleryPath, image));
+    const xmp = await xmpReader.fromBuffer(buffer)
     let subHtml = '';
-    if (iptcData) {
-      if (iptcData.object_name) {
-        subHtml += `<h4>${iptcData.object_name}</h4>`;
+    let title = '';
+    let description = '';
+
+    if (xmp) {
+      if (xmp.title) {
+        subHtml += `<h4>${xmp.title}</h4>`;
+        title = xmp.title;
       }
-      if (iptcData.caption) {
-        subHtml += `<p>${iptcData.caption}</p>`;
+      if (xmp.description) {
+        subHtml += `<p>${xmp.description}</p>`;
+        description = xmp.description;
       }
     }
 
@@ -156,6 +131,8 @@ function summarizeFolder(folder) {
       large: `large/${image}`,
       createDate,
       subHtml,
+      title,
+      description,
       location: {
         lat,
         lng
@@ -163,7 +140,9 @@ function summarizeFolder(folder) {
       imageSize: exifData.imageSize,
       isCover: image.toLowerCase().startsWith('cover')
     }
-  }), ['createDate']);
+  }));
+
+  return _.sortBy(imageDatas, ['createDate']);
 }
 
 function summarizeGallery() {
@@ -198,7 +177,13 @@ gulp.task('large', () => {
     const galleryPath = path.join(galleryTemp, 'gallery', folder);
     return gulp.src(path.join(galleryPath, extensionGlob), {nocase: true})
       .pipe(parallel(gulpSharp({
-        resize: [largeWidth, largeWidth],
+        resize: {
+          width: largeWidth,
+          height: largeWidth,
+          withoutEnlargement: true,
+          fit: 'inside',
+          keepMetadata: true
+        },
         quality: 88,
         rotate: true
       }), CORES))
@@ -215,7 +200,12 @@ gulp.task('medium', () => {
     const galleryPath = path.join(galleryTemp, 'gallery', folder);
     return gulp.src(path.join(galleryPath, extensionGlob), {nocase: true})
       .pipe(parallel(gulpSharp({
-        resize: [mediumWidth, mediumWidth],
+        resize: {
+          width: mediumWidth,
+          height: mediumWidth,
+          withoutEnlargement: true,
+          fit: 'inside'
+        },
         quality: 88,
         rotate: true
       }), CORES))
@@ -232,7 +222,12 @@ gulp.task('thumbs', () => {
     const galleryPath = path.join(galleryTemp, 'gallery', folder);
     return gulp.src(path.join(galleryPath, 'medium', extensionGlob), {nocase: true})
       .pipe(parallel(gulpSharp({
-        resize: [thumbWidth, thumbWidth],
+        resize: {
+          width: thumbWidth,
+          height: thumbWidth,
+          withoutEnlargement: true,
+          fit: 'inside'
+        },
         quality: 80,
         rotate: true
       }), CORES))
@@ -244,10 +239,10 @@ gulp.task('thumbs', () => {
   }));
 });
 
-gulp.task('galleryHtml', () => {
-  return mergeStream(_.flatten(folders.map(folder => {
+gulp.task('galleryHtml', async () => {
+  const streams = _.flatten(await Promise.all(folders.map(async folder => {
     const galleryPath = path.join(galleryTemp, 'gallery', folder);
-    const images = summarizeFolder(folder);
+    const images = await summarizeFolder(folder);
     const pugConfig = {
       locals: {
         _
@@ -270,10 +265,12 @@ gulp.task('galleryHtml', () => {
         .pipe(pug(pugConfig))
         .pipe(gulp.dest(galleryPath))
         .pipe(debug({title: 'Created gallery HTML'})),
-      file('index.json', JSON.stringify(images), {src: true})
+      file('index.json', JSON.stringify(images))
         .pipe(gulp.dest(galleryPath))
     ];
   })));
+
+  await pipeline(...streams);
 });
 
 gulp.task('indexHtml', () => {
@@ -388,13 +385,13 @@ gulp.task('publishAWS', () => {
 });
 
 gulp.task('clean', () => {
-   return del(galleryTemp);
+  return del(galleryTemp);
 });
 
 gulp.task('resize', gulp.parallel('large', 'medium', 'thumbs'));
 
 gulp.task('html', gulp.series('galleryHtml', gulp.parallel('indexHtml', 'copyStatic', 'favicon')))
 
-gulp.task('build', gulp.series('copyOriginals', 'resize', 'html'));
+gulp.task('build', gulp.series('clean', 'copyOriginals', 'resize', 'html'));
 
 gulp.task('deploy', gulp.series('build', 'publishAWS'));

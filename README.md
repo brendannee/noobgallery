@@ -51,9 +51,11 @@ Example directory structure:
         ├── file2.jpg
         └── file3.jpg
 
-If an image has an IPTC `object_name` set, this will be used as the photo title and the IPTC `caption` will be used as the photo description. If this information isn't set, no title or description will be shown.
-
 Optionally, you can include a `favicon.ico` file in your gallery root folder.
+
+## Image Metadata
+
+If an image has an XMP `Title` set, this will be used as the photo title. The XMP `description` will be used as the photo description. If this information isn't set, no title or description will be shown.
 
 ## Preprocessing and running locally
 
