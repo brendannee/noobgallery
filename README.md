@@ -55,7 +55,11 @@ Optionally, you can include a `favicon.ico` file in your gallery root folder.
 
 ## Image Metadata
 
-If an image has an XMP `Title` set, this will be used as the photo title. The XMP `description` will be used as the photo description. If this information isn't set, no title or description will be shown.
+If an image has an XMP `Title` set, this will be used as the photo title. The XMP `Description` will be used as the photo description. If this information isn't set, no title or description will be show.
+
+Want to add metadata to a photo manually with the command line? Use [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/) to do:
+
+    exiftool -XMP:Title="The Eiffel Tower" -XMP:Description="A nice description of this" /path/to/your/image.jpg 
 
 ## Preprocessing and running locally
 
