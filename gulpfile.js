@@ -154,14 +154,14 @@ function summarizeGallery() {
     }
 
     if (images && images.length) {
-      const cover = _.find(images, {isCover: true}) || images[0]
-
+      const cover = _.find(images, {isCover: true}) || images[0];
       summary.src = cover.src
       summary.thumb = cover.thumb
       summary.medium = cover.medium
       summary.large = cover.large
       summary.imageSize = cover.imageSize
     }
+
     return summary
   })
 }
@@ -239,10 +239,22 @@ gulp.task('thumbs', () => {
   }));
 });
 
-gulp.task('galleryHtml', async () => {
-  const streams = _.flatten(await Promise.all(folders.map(async folder => {
+gulp.task('galleryJson', () => {
+  return Promise.all(folders.map(async folder => {
     const galleryPath = path.join(galleryTemp, 'gallery', folder);
     const images = await summarizeFolder(folder);
+    return new Promise((resolve, reject) => {
+      file('index.json', JSON.stringify(images), {src: true})
+        .pipe(gulp.dest(galleryPath))
+        .on('end', resolve);
+    });
+  }));
+});
+
+gulp.task('galleryHtml', () => {
+  return mergeStream(folders.map(folder => {
+    const galleryPath = path.join(galleryTemp, 'gallery', folder);
+    const images = JSON.parse(readFileSync(path.join(galleryPath, 'index.json'), 'utf8'))
     const pugConfig = {
       locals: {
         _
@@ -259,18 +271,12 @@ gulp.task('galleryHtml', async () => {
       }
     };
 
-    return [
-      gulp.src('views/gallery.pug')
+    return gulp.src('views/gallery.pug')
         .pipe(rename('index.html'))
         .pipe(pug(pugConfig))
         .pipe(gulp.dest(galleryPath))
-        .pipe(debug({title: 'Created gallery HTML'})),
-      file('index.json', JSON.stringify(images))
-        .pipe(gulp.dest(galleryPath))
-    ];
-  })));
-
-  await pipeline(...streams);
+        .pipe(debug({title: 'Created gallery HTML'}))
+  }));
 });
 
 gulp.task('indexHtml', () => {
@@ -390,7 +396,7 @@ gulp.task('clean', () => {
 
 gulp.task('resize', gulp.parallel('large', 'medium', 'thumbs'));
 
-gulp.task('html', gulp.series('galleryHtml', gulp.parallel('indexHtml', 'copyStatic', 'favicon')))
+gulp.task('html', gulp.series('galleryJson', 'galleryHtml', gulp.parallel('indexHtml', 'copyStatic', 'favicon')))
 
 gulp.task('build', gulp.series('clean', 'copyOriginals', 'resize', 'html'));
 
