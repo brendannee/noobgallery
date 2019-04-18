@@ -262,7 +262,8 @@ gulp.task('galleryHtml', () => {
       data: {
         config: {
           galleryDescription: process.env.GALLERY_DESCRIPTION,
-          assetPath: '../../static'
+          assetPath: '../../static',
+          forceHttps: process.env.FORCE_HTTPS
         },
         images,
         galleryId: folder,
@@ -288,7 +289,8 @@ gulp.task('indexHtml', () => {
       data: {
         config: {
           assetPath: './static',
-          useIndexFile: process.env.USE_INDEX_FILE
+          useIndexFile: process.env.USE_INDEX_FILE,
+          forceHttps: process.env.FORCE_HTTPS
         },
         galleries: summarizeGallery(),
         galleryTitle: process.env.GALLERY_TITLE,

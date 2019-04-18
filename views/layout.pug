@@ -7,6 +7,12 @@ html
     link(rel="stylesheet" href=`${config.assetPath}/lightgallery.js/css/lightgallery.min.css`)
     link(rel="stylesheet" href=`${config.assetPath}/css/style.css`)
 
+    if config.forceHttps
+      script.
+        if (location.protocol != 'https:') {
+          location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+        }
+
   body
     header
       nav
@@ -14,4 +20,3 @@ html
     block content
 
     footer Powered by <a href="https://github.com/brendannee/noobgallery">noobgallery</a>
-      

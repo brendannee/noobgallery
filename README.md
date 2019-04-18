@@ -23,6 +23,7 @@ Add a `.env` file with the following variables:
     AWS_ACCESS_KEY=YOUR_AWS_ACCESS_KEY
     AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET KEY
     USE_INDEX_FILE=true
+    FORCE_HTTPS=false
 
 ## Setup
 
