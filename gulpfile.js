@@ -4,7 +4,7 @@ const path = require('path');
 const util = require('util');
 const stream = require('stream');
 const untildify = require('untildify');
-const { readdirSync, statSync, readFileSync } = require('fs');
+const { readdir, readdirSync, statSync, readFileSync } = require('fs');
 const gulp = require('gulp');
 const parallel = require('concurrent-transform');
 const mergeStream = require('merge-stream');
@@ -21,7 +21,7 @@ const through = require('through2');
 const sharp = require('sharp');
 const del = require('del');
 const pug = require('gulp-pug');
-const pipeline = util.promisify(stream.pipeline);
+const readFolder = util.promisify(readdir);
 
 const gallerySource = untildify(process.env.GALLERY_LOCAL_PATH);
 const galleryTemp = './build';
@@ -80,90 +80,120 @@ const folders = readdirSync(gallerySource).filter(file => {
   return statSync(path.join(gallerySource, file)).isDirectory();
 });
 
+const summarizeImage = async (filePath, fileName) => {
+  const buffer = readFileSync(filePath);
+      const xmp = await xmpReader.fromBuffer(buffer)
+      let subHtml = '';
+      let title = '';
+      let description = '';
+
+      if (xmp) {
+        if (xmp.title) {
+          subHtml += `<h4>${xmp.title}</h4>`;
+          title = xmp.title;
+        }
+        if (xmp.description) {
+          subHtml += `<p>${xmp.description}</p>`;
+          description = xmp.description;
+        }
+      }
+
+      const parser = exif.create(buffer);
+      const exifData = parser.parse();
+
+      let createDate;
+      let lat;
+      let lng;
+      if (exifData && exifData.tags) {
+        createDate = exifData.tags.CreateDate;
+
+        if (exifData.tags.GPSLatitude && exifData.tags.GPSLongitude) {
+          lat = exifData.tags.GPSLatitude;
+          lng = exifData.tags.GPSLongitude;
+        }
+      }
+
+      return {
+        thumb: `thumbs/${fileName}`,
+        medium: `medium/${fileName}`,
+        large: `large/${fileName}`,
+        createDate,
+        subHtml,
+        title,
+        description,
+        location: {
+          lat,
+          lng
+        },
+        imageSize: exifData.imageSize,
+        isCover: fileName.toLowerCase().startsWith('cover'),
+        fileName,
+        src: filePath,
+        fileName,
+        type: 'image',
+      }
+}
+
 const summarizeFolder = async folder => {
   const galleryPath = path.join(galleryTemp, 'gallery', folder, 'large');
-  const images = readdirSync(galleryPath).filter(file => {
-    const filePath = path.join(galleryPath, file);
+  const items = await readFolder(galleryPath)
+    .catch(error => {
+      // Hide errors
+      return [];
+    });
+
+  const galleryItems =  _.compact(await Promise.all(items.map(async fileName => {
+    const filePath = path.join(galleryPath, fileName);
     if (statSync(filePath).isDirectory()) {
-      return false;
-    }
-    return imageExtensions.includes(path.extname(filePath).toLowerCase().substr(1))
-  });
-
-
-  const imageDatas = await Promise.all(images.map(async image => {
-    const buffer = readFileSync(path.join(galleryPath, image));
-    const xmp = await xmpReader.fromBuffer(buffer)
-    let subHtml = '';
-    let title = '';
-    let description = '';
-
-    if (xmp) {
-      if (xmp.title) {
-        subHtml += `<h4>${xmp.title}</h4>`;
-        title = xmp.title;
-      }
-      if (xmp.description) {
-        subHtml += `<p>${xmp.description}</p>`;
-        description = xmp.description;
-      }
+      // return {
+      //   type: 'gallery',
+      //   filePath,
+      //   fileName,
+      // };
+    } else if (imageExtensions.includes(path.extname(filePath).toLowerCase().substr(1))) {
+      return summarizeImage(filePath, fileName)
     }
 
-    const parser = exif.create(buffer);
-    const exifData = parser.parse();
+    return false;
+  })));
 
-    let createDate;
-    let lat;
-    let lng;
-    if (exifData && exifData.tags) {
-      createDate = exifData.tags.CreateDate;
-
-      if (exifData.tags.GPSLatitude && exifData.tags.GPSLongitude) {
-        lat = exifData.tags.GPSLatitude;
-        lng = exifData.tags.GPSLongitude;
-      }
-    }
-
-    return {
-      src: `${image}`,
-      thumb: `thumbs/${image}`,
-      medium: `medium/${image}`,
-      large: `large/${image}`,
-      createDate,
-      subHtml,
-      title,
-      description,
-      location: {
-        lat,
-        lng
-      },
-      imageSize: exifData.imageSize,
-      isCover: image.toLowerCase().startsWith('cover')
-    }
-  }));
-
-  return _.sortBy(imageDatas, ['createDate']);
+  return _.sortBy(galleryItems, ['createDate']);
 }
 
 function summarizeGallery() {
   return folders.map(folder => {
     const images = JSON.parse(readFileSync(path.join(galleryTemp, 'gallery', folder, 'index.json'), 'utf8'))
 
-    const summary = {
-      galleryId: folder
+    const notFoundImageUrl = path.join('static', 'images', 'not_found.png');
+    const cover = {
+      src: notFoundImageUrl,
+      thumb: notFoundImageUrl,
+      medium: notFoundImageUrl,
+      large: notFoundImageUrl,
+      imageSize: {
+        height: 225,
+        width: 225,
+      },
     }
 
     if (images && images.length) {
-      const cover = _.find(images, {isCover: true}) || images[0];
-      summary.src = cover.src
-      summary.thumb = cover.thumb
-      summary.medium = cover.medium
-      summary.large = cover.large
-      summary.imageSize = cover.imageSize
+      const image = _.find(images, {isCover: true}) || images[0];
+      cover.src = image.src;
+      cover.thumb = path.join('gallery', folder, image.thumb);
+      cover.medium = path.join('gallery', folder, image.medium);
+      cover.large = path.join('gallery', folder, image.large);
+      cover.imageSize = image.imageSize;
     }
 
-    return summary
-  })
+    return {
+      galleryId: folder,
+      src: cover.src,
+      thumb: cover.thumb,
+      medium: cover.medium,
+      large: cover.large,
+      imageSize: cover.imageSize,
+    };
+  });
 }
 
 gulp.task('copyOriginals', () => {

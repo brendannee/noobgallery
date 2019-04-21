@@ -10,7 +10,7 @@ block content
       .grid-sizer
       .gutter-sizer
       each image in images
-        div(class=`grid-item ${image.imageSize.width > image.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${image.thumb} 200, ${image.medium} 600, ${image.large} 3000` data-src=`${image.src}` data-sub-html=image.subHtml)
+        div(class=`grid-item ${image.imageSize.width > image.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${image.thumb} 200, ${image.medium} 600, ${image.large} 3000` data-src=`${image.fileName}` data-sub-html=image.subHtml)
           a.photo-link(href="" title=image.title)
             img(src=`${image.medium}` data-aspect-ratio=`${image.imageSize.width/image.imageSize.height}` alt=image.title)        
             
