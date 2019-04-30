@@ -29,4 +29,8 @@ html
 
     block content
 
-    footer Powered by <a href="https://github.com/brendannee/noobgallery">noobgallery</a>
+    footer 
+      if config.footerHtml
+        span!= config.footerHtml
+        span &nbsp;|&nbsp;
+      span Powered by <a href="https://github.com/brendannee/noobgallery">noobgallery</a>

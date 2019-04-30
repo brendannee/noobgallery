@@ -82,7 +82,13 @@ const summarizeImage = async (galleryPath, fileName) => {
   const xmp = await xmpReader.fromBuffer(buffer)
   let subHtml = '';
   const galleryName = galleryPath.split(path.sep).pop();
-  let title = `${_.startCase(galleryName)} - ${path.basename(fileName)}`;
+  const photoTitle = path.basename(fileName, path.extname(fileName));
+  let title = _.startCase(galleryName);
+
+  if (photoTitle !== 'cover') {
+    title += ` - ${photoTitle}`;
+  }
+
   let description = '';
 
   if (xmp) {
@@ -251,6 +257,7 @@ const createGalleryHtml = async galleryPath => {
         useIndexFile: process.env.USE_INDEX_FILE,
         forceHttps: process.env.FORCE_HTTPS,
         googleAnalytics: process.env.GOOGLE_ANALYTICS_ID,
+        footerHtml: process.env.FOOTER_HTML,
       },
       items,
       galleryName,

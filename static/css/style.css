@@ -258,7 +258,7 @@ a.breadcrumb:hover {
 .gallery .grid-item .photo-link-title {
   color: #FFFFFF;
   text-align: center;
-  padding: 11px 10px;
+  padding: 7px 10px;
   text-decoration: none;
   font-size: 20px;
   font-weight: bold;
@@ -266,6 +266,7 @@ a.breadcrumb:hover {
   bottom: 0;
   left: 0;
   right: 0;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 footer {

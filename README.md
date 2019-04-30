@@ -26,6 +26,7 @@ Add a `.env` file with the following variables:
     FORCE_HTTPS=false
     GOOGLE_ANALYTICS_ID=YOUR_GOOGLE_ANALYTICS_ID
     SHOW_CREATED_DATE=true
+    FOOTER_HTML=&copy; 2019 <a href="https://yourwebsite.com">A great photographer</a>
 
 ## Setup
 
