@@ -24,6 +24,7 @@ Add a `.env` file with the following variables:
     AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET KEY
     USE_INDEX_FILE=true
     FORCE_HTTPS=false
+    GOOGLE_ANALYTICS_ID=YOUR_GOOGLE_ANALYTICS_ID
 
 ## Setup
 
