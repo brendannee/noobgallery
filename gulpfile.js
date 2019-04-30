@@ -160,7 +160,7 @@ const getCoverImage = galleryPath => {
   const items = JSON.parse(readFileSync(path.join(galleryPath, 'index.json'), 'utf8'));
 
   if (items && items.length) {
-    const image = items.find(item => item.isCover === true) || items[0];
+    const image = items.find(item => item.isCover === true && item.type !== 'gallery') || items[0];
     if (image.src) {
       return image;
     }
