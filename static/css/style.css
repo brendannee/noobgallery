@@ -25,7 +25,8 @@ body {
 
 .gallery-description {
   color: #ddd;
-  font-size: 16px;
+  font-size: 18spx;
+  margin-bottom: 20px;
 }
 
 .breadcrumbs {
@@ -33,28 +34,37 @@ body {
 }
 
 .breadcrumb {
-  color: #ddd;
+  color: #ccc;
   padding-right: 8px;
 }
 
 a.breadcrumb {
-  color: #ddd;
+  color: #ccc;
   text-decoration: none;
 }
 
 a.breadcrumb:hover {
   color: #ddd;
   text-decoration: underline;
-}
+} 
 
-.gallery {
-  margin-top: 25px;
+.gallery-link-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 10px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  font-size: 16px;
+  color: white;
 }
 
 /* gallery layout pre-masonry load */
 .gallery .grid-item {
   margin-right: 10px;
   float: left;
+  position: relative;
 }
 
 /* gallery layout post-masonry load */

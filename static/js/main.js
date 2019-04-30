@@ -26,6 +26,6 @@ masonryLayout.on('layoutComplete', () => {
 
 if (typeof lightGallery !== 'undefined') {
   lightGallery(document.getElementById('lightgallery'), {
-    selector: '.grid-item'
+    selector: '.grid-item-image'
   })
 }
