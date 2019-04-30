@@ -417,20 +417,24 @@ gulp.task('publishAWS', () => {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
   });
 
+  const concurrentUploads = 1000;
+
   // Set caching headers to 20 minutes for json and html files
   return mergeStream(
     gulp.src([path.join(galleryDest, '/**/*'), `!${path.join(galleryDest, '/**/*.{json,html}')}`])
-      .pipe(parallel(awspublish.gzip(), CORES))
+      .pipe(parallel(awspublish.gzip(), concurrentUploads))
       .pipe(parallel(publisher.publish({
         'Cache-Control': 'max-age=315360000, no-transform, public'
-      }), CORES))
+      }), concurrentUploads))
+      .pipe(publisher.sync(null, [/^.*\.(json|html)$/]))
       .pipe(publisher.cache())
       .pipe(awspublish.reporter()),
     gulp.src(path.join(galleryDest, '/**/*.{json,html}'))
-      .pipe(parallel(awspublish.gzip(), CORES))
+      .pipe(parallel(awspublish.gzip(), concurrentUploads))
       .pipe(parallel(publisher.publish({
         'Cache-Control': 'max-age=1200, no-transform, public'
-      }), CORES))
+      }), concurrentUploads))
+      .pipe(publisher.sync(null, [/^.*\.(png|PNG|gif|GIF|jpeg|JPEG|jpg|JPG|bmp|BMP)$/, /^static/, /^favicon.ico/]))
       .pipe(publisher.cache())
       .pipe(awspublish.reporter())
   );
