@@ -19,7 +19,7 @@ block content
       each item in items
         if item.type === 'image'
           div(class=`grid-item grid-item-image ${item.imageSize.width > item.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${item.thumb} 200, ${item.medium} 600, ${item.large} 3000` data-src=`${item.fileName}` data-sub-html=item.subHtml)
-            a.photo-link(href="" title=item.title)
+            a.photo-link(href=item.fileName title=item.title)
               img(src=`${item.medium}` data-aspect-ratio=`${item.imageSize.width/item.imageSize.height}` alt=item.title)
         else if item.type === 'gallery'
           div(class=`grid-item ${item.imageSize.width > item.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${item.thumb} 200, ${item.medium} 600, ${item.large} 3000` data-src=`${item.fileName}`)

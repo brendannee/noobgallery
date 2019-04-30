@@ -76,58 +76,59 @@ function gulpSharp(options){
   });
 }
 
-const summarizeImage = async (filePath, fileName) => {
-  const buffer = readFileSync(filePath);
-      const xmp = await xmpReader.fromBuffer(buffer)
-      let subHtml = '';
-      let title = '';
-      let description = '';
+const summarizeImage = async (galleryPath, fileName) => {
+  const buffer = readFileSync(path.join(galleryPath, 'large', fileName));
+  const xmp = await xmpReader.fromBuffer(buffer)
+  let subHtml = '';
+  const galleryName = galleryPath.split(path.sep).pop();
+  let title = `${_.startCase(galleryName)} - ${path.basename(fileName)}`;
+  let description = '';
 
-      if (xmp) {
-        if (xmp.title) {
-          subHtml += `<h4>${xmp.title}</h4>`;
-          title = xmp.title;
-        }
-        if (xmp.description) {
-          subHtml += `<p>${xmp.description}</p>`;
-          description = xmp.description;
-        }
-      }
+  if (xmp) {
+    if (xmp.title) {
+      subHtml += `<h4>${xmp.title}</h4>`;
+      title = xmp.title;
+    }
+    if (xmp.description) {
+      subHtml += `<p>${xmp.description}</p>`;
+      description = xmp.description;
+    }
+  }
 
-      const parser = exif.create(buffer);
-      const exifData = parser.parse();
+  const parser = exif.create(buffer);
+  const exifData = parser.parse();
 
-      let createDate;
-      let lat;
-      let lng;
-      if (exifData && exifData.tags) {
-        createDate = exifData.tags.CreateDate;
+  let createDate;
+  let lat;
+  let lng;
+  if (exifData && exifData.tags) {
+    createDate = exifData.tags.CreateDate;
 
-        if (exifData.tags.GPSLatitude && exifData.tags.GPSLongitude) {
-          lat = exifData.tags.GPSLatitude;
-          lng = exifData.tags.GPSLongitude;
-        }
-      }
+    if (exifData.tags.GPSLatitude && exifData.tags.GPSLongitude) {
+      lat = exifData.tags.GPSLatitude;
+      lng = exifData.tags.GPSLongitude;
+    }
+  }
 
-      return {
-        thumb: `thumbs/${fileName}`,
-        medium: `medium/${fileName}`,
-        large: `large/${fileName}`,
-        createDate,
-        subHtml,
-        title,
-        description,
-        location: {
-          lat,
-          lng
-        },
-        imageSize: exifData.imageSize,
-        isCover: fileName.toLowerCase().startsWith('cover'),
-        fileName,
-        src: filePath,
-        fileName,
-        type: 'image',
-      }
+  return {
+    thumb: `thumbs/${fileName}`,
+    medium: `medium/${fileName}`,
+    large: `large/${fileName}`,
+    createDate,
+    subHtml,
+    title,
+    description,
+    location: {
+      lat,
+      lng
+    },
+    imageSize: exifData.imageSize,
+    isCover: fileName.toLowerCase().startsWith('cover'),
+    fileName,
+    src: path.join(galleryPath, fileName),
+    fileName,
+    type: 'image',
+  }
 }
 
 const getNotFoundImage = () => {
@@ -166,9 +167,8 @@ const createGalleryJson = async galleryPath => {
     });
 
   const images = _.compact(await Promise.all(files.map(async fileName => {
-    const filePath = path.join(galleryPathLarge, fileName);
-    if (imageExtensions.includes(path.extname(filePath).toLowerCase().substr(1))) {
-      return summarizeImage(filePath, fileName)
+    if (imageExtensions.includes(path.extname(fileName).toLowerCase().substr(1))) {
+      return summarizeImage(galleryPath, fileName)
     }
 
     return false;
