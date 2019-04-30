@@ -25,6 +25,7 @@ Add a `.env` file with the following variables:
     USE_INDEX_FILE=true
     FORCE_HTTPS=false
     GOOGLE_ANALYTICS_ID=YOUR_GOOGLE_ANALYTICS_ID
+    SHOW_CREATED_DATE=true
 
 ## Setup
 

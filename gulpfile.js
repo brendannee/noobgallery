@@ -17,6 +17,7 @@ const CORES = require('os').cpus().length;
 const xmpReader = require('xmp-reader');
 const exif = require('exif-parser');
 const _ = require('lodash');
+const moment = require('moment');
 const through = require('through2');
 const sharp = require('sharp');
 const del = require('del');
@@ -108,6 +109,10 @@ const summarizeImage = async (galleryPath, fileName) => {
       lat = exifData.tags.GPSLatitude;
       lng = exifData.tags.GPSLongitude;
     }
+  }
+
+  if (createDate && process.env.SHOW_CREATED_DATE !== 'false') {
+    subHtml += `<p>Taken ${moment.unix(createDate).format('MMM D, YYYY')}</p>`;
   }
 
   return {
