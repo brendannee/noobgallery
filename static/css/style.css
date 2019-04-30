@@ -46,25 +46,12 @@ a.breadcrumb {
 a.breadcrumb:hover {
   color: #ddd;
   text-decoration: underline;
-} 
-
-.gallery-link-title {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 5px 10px;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  font-size: 16px;
-  color: white;
 }
 
 /* gallery layout pre-masonry load */
 .gallery .grid-item {
   margin-right: 10px;
   float: left;
-  position: relative;
 }
 
 /* gallery layout post-masonry load */
@@ -175,7 +162,7 @@ a.breadcrumb:hover {
   transform: scale3d(1.1, 1.1, 1.1);
 }
 
-.gallery.gallery-index .grid-item .photo-link-title {
+.gallery .grid-item .photo-link-title {
   color: #FFFFFF;
   text-align: center;
   padding: 11px 10px;

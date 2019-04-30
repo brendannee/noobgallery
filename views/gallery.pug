@@ -25,7 +25,7 @@ block content
           div(class=`grid-item ${item.imageSize.width > item.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${item.thumb} 200, ${item.medium} 600, ${item.large} 3000` data-src=`${item.fileName}`)
             a.photo-link(href=`${item.galleryUrl}/${config.useIndexFile !== 'false' ? 'index.html' : ''}` title=item.title)
               img(src=`${item.medium}` data-aspect-ratio=`${item.imageSize.width/item.imageSize.height}` alt=item.title)
-              .gallery-link-title= `Gallery: ${item.title}`
+              .photo-link-title= isTopLevel ? item.title : `Gallery: ${item.title}`
             
   script(src=`${config.assetPath}/masonry-layout/masonry.pkgd.min.js`)
   script(src=`${config.assetPath}/imagesloaded/imagesloaded.pkgd.min.js`)
