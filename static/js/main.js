@@ -18,6 +18,10 @@ const masonryLayout = new Masonry(document.querySelector('.gallery'), {
 
 imagesLoaded(document.querySelector('.gallery'), () => {
   masonryLayout.layout()
+  document.querySelectorAll('.grid-item').forEach(image => {
+    image.style.visibility = 'visible'
+  })
+  document.getElementById('loading').style.display = 'none'
 })
 
 masonryLayout.on('layoutComplete', () => {
