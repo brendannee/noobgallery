@@ -254,8 +254,8 @@ const createGalleryHtml = async galleryPath => {
     data: {
       config: {
         assetPath: path.relative(galleryPath, path.join(galleryDest, 'static')),
-        useIndexFile: process.env.USE_INDEX_FILE,
-        forceHttps: process.env.FORCE_HTTPS,
+        useIndexFile: process.env.USE_INDEX_FILE === 'true',
+        forceHttps: process.env.FORCE_HTTPS === 'true',
         googleAnalytics: process.env.GOOGLE_ANALYTICS_ID,
         footerHtml: process.env.FOOTER_HTML,
       },

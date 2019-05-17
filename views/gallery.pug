@@ -32,7 +32,7 @@ block content
               img(src=`${item.medium}` data-aspect-ratio=`${item.imageSize.width/item.imageSize.height}` alt=item.title)
         else if item.type === 'gallery'
           div(class=`grid-item ${item.imageSize.width > item.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${item.thumb} 200, ${item.medium} 600, ${item.large} 3000` data-src=`${item.fileName}`)
-            a.photo-link(href=`${item.galleryUrl}/${config.useIndexFile !== 'false' ? 'index.html' : ''}` title=item.title)
+            a.photo-link(href=`${item.galleryUrl}/${config.useIndexFile ? 'index.html' : ''}` title=item.title)
               img(src=`${item.medium}` data-aspect-ratio=`${item.imageSize.width/item.imageSize.height}` alt=item.title)
               .photo-link-title= isTopLevel ? item.title : `Gallery: ${item.title}`
             
