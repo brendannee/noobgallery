@@ -12,7 +12,7 @@ block content
             a.breadcrumb(href='/') Home
           else 
             span.breadcrumb &raquo;
-            a.breadcrumb(href=path)= _.startCase(crumb)
+            a.breadcrumb(href=path)= formatName(crumb)
     #lightgallery.gallery
       #loading.lds-roller
         div

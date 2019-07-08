@@ -83,7 +83,7 @@ const summarizeImage = async (galleryPath, fileName) => {
   let subHtml = '';
   const galleryName = galleryPath.split(path.sep).pop();
   const photoTitle = path.basename(fileName, path.extname(fileName));
-  let title = _.startCase(galleryName);
+  let title = formatName(galleryName);
 
   if (photoTitle !== 'cover') {
     title += ` - ${photoTitle}`;
@@ -211,7 +211,7 @@ const createGalleryJson = async galleryPath => {
         type: 'gallery',
         filePath: subgalleryFilePath,
         galleryUrl: subgalleryUrlPath,
-        title: _.startCase(fileName),
+        title: formatName(fileName),
       };
     }
 
@@ -225,6 +225,10 @@ const createGalleryJson = async galleryPath => {
       .pipe(gulp.dest(galleryPath))
       .on('end', resolve);
   });
+}
+
+const formatName = name => {
+  return name.replace(/\_/g, ' ').split(' ').map(word => _.capitalize(word)).join(' ');
 }
 
 const createGalleryHtml = async galleryPath => {
@@ -244,12 +248,12 @@ const createGalleryHtml = async galleryPath => {
   const items = JSON.parse(readFileSync(path.join(galleryPath, 'index.json'), 'utf8'));
   const galleryName = galleryPath.split(path.sep).pop();
   const isTopLevel = galleryName === 'gallery';
-  const galleryTitle = isTopLevel ? process.env.GALLERY_TITLE : `${_.startCase(galleryName)} - ${process.env.GALLERY_TITLE}`;
+  const galleryTitle = isTopLevel ? process.env.GALLERY_TITLE : `${formatName(galleryName)} - ${process.env.GALLERY_TITLE}`;
   const breadcrumb = path.relative(galleryDest, galleryPath);
 
   const pugConfig = {
     locals: {
-      _
+      formatName
     },
     data: {
       config: {
