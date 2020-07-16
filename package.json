@@ -39,7 +39,7 @@
     "lg-thumbnail.js": "^1.2.0",
     "lg-zoom.js": "^1.2.0",
     "lightgallery.js": "^1.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "masonry-layout": "^4.2.2",
     "merge-stream": "^2.0.0",
     "moment": "^2.26.0",
