@@ -32,7 +32,7 @@ Add a `.env` file with the following variables:
 
 Install dependencies
 
-    npm install
+    yarn
 
 ## Organizing images
 
@@ -73,13 +73,13 @@ It creates resized versions of all photos that are 3000px wide in a subfolder ca
 
 To run the preprocessing task:
 
-    npm run build
+    yarn build
 
 If your `.env` file is has the correct variables, images will be processed locally and moved to the `./build` folder inside of this project.
 
 To run locally
 
-    npm start
+    yarn start
 
 Open http://localhost:5000 in your browser.
 
@@ -87,7 +87,7 @@ Open http://localhost:5000 in your browser.
 
 You can deploy the site to Amazon S3 with:
 
-    npm run deploy
+    yarn deploy
 
 This will work as long as you specify your AWS S3 credentials in a `.env` file.
 
