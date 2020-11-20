@@ -2,7 +2,9 @@
 
 noobgallery is a static photo gallery powered by [lightgallery.js](https://sachinchoolur.github.io/lightgallery.js/). It can be deployed to Amazon S3, which allows a huge amount of storage. (around $0.02/GB per month).
 
-You can see noobgallery in action at https://wanderingnoobs.com.
+<img width="800" src="https://user-images.githubusercontent.com/96217/99756404-ef6e0c00-2aa1-11eb-9369-dde7ecb308ce.png">
+
+You can see noobgallery in action at https://picturethecity.com.
 
 ## Configuration
 
@@ -16,7 +18,7 @@ noobgallery uses Amazon S3 to host images. You'll need to:
 Add a `.env` file with the following variables:
 
     GALLERY_TITLE=Your Gallery Name
-    GALLERY_DESCRIPTION=Photos by a noob
+    GALLERY_DESCRIPTION=Photos by a noob.
     GALLERY_LOCAL_PATH=~/path/to/your/gallery/root
     AWS_REGION=us-east-1
     AWS_BUCKET=yourbucketname
