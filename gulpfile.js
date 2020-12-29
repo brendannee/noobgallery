@@ -11,8 +11,9 @@ const mergeStream = require('merge-stream');
 const file = require('gulp-file');
 const debug = require('gulp-debug');
 const rename = require('gulp-rename');
-const gutil = require('gulp-util');
 const awspublish = require('gulp-awspublish');
+const PluginError = require('plugin-error');
+const Vinyl = require('vinyl');
 const CORES = require('os').cpus().length;
 const xmpReader = require('xmp-reader');
 const exif = require('exif-parser');
@@ -43,15 +44,15 @@ function gulpSharp(options){
     }
 
     if (!options) {
-      this.emit('error', new gutil.PluginError('gulpSharp', "You need to pass options to this plugin. See docs..."));
+      this.emit('error', new PluginError('gulpSharp', "You need to pass options to this plugin. See docs..."));
     }
 
     if (!options.resize) {
-      this.emit('error', new gutil.PluginError('gulpSharp', "You must pass resize as an option and it must be an array with 2 values w,h."));
+      this.emit('error', new PluginError('gulpSharp', "You must pass resize as an option and it must be an array with 2 values w,h."));
     }
 
     if (file.isStream()) {
-      this.emit('error', new gutil.PluginError('gulpSharp', "Received a stream... Streams are not supported. Sorry."));
+      this.emit('error', new PluginError('gulpSharp', "Received a stream... Streams are not supported. Sorry."));
       return callback();
     }
 
@@ -65,7 +66,7 @@ function gulpSharp(options){
         .jpeg({quality: options.quality || 80})
         .toBuffer()
         .then(function(data) {
-          const newFile = new gutil.File({
+          const newFile = new Vinyl({
             cwd: file.cwd,
             base: file.base,
             path: file.path,
