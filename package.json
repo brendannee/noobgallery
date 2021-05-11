@@ -21,7 +21,7 @@
   "dependencies": {
     "concurrent-transform": "^1.0.0",
     "del": "^6.0.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^9.0.2",
     "exif-parser": "^0.1.12",
     "gulp": "^4.0.2",
     "gulp-awspublish": "^4.1.2",
@@ -44,7 +44,7 @@
     "moment": "^2.29.1",
     "plugin-error": "^1.0.1",
     "serve": "^11.3.2",
-    "sharp": "^0.27.2",
+    "sharp": "^0.28.2",
     "through2": "^4.0.2",
     "untildify": "^4.0.0",
     "vinyl": "^2.2.1",
