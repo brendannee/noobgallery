@@ -44,7 +44,7 @@
     "moment": "^2.29.1",
     "plugin-error": "^1.0.1",
     "serve": "^11.3.2",
-    "sharp": "^0.28.2",
+    "sharp": "^0.30.5",
     "through2": "^4.0.2",
     "untildify": "^4.0.0",
     "vinyl": "^2.2.1",
