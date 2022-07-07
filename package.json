@@ -41,7 +41,7 @@
     "lodash": "^4.17.21",
     "masonry-layout": "^4.2.2",
     "merge-stream": "^2.0.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "plugin-error": "^1.0.1",
     "serve": "^11.3.2",
     "sharp": "^0.28.2",
