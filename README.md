@@ -6,6 +6,21 @@ noobgallery is a static photo gallery powered by [lightgallery.js](https://sachi
 
 You can see noobgallery in action at https://picturethecity.com.
 
+## This fork
+
+This fork adds a few more features to the original project:
+
+* about page
+* error page
+* gallery summary & tags (via optional gallery.json for each gallery)
+* hide the image download button
+* do not upload original images
+* reduce largest size from 3000x to 2400x
+* add optional copyright watermark
+* add optional fotomoto store links
+* tech: improved error handling during build
+* tech: support CloudFront without the need for lambda function
+
 ## Configuration
 
 noobgallery uses Amazon S3 to host images. You'll need to:
