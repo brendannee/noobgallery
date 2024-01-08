@@ -31,6 +31,7 @@ masonryLayout.on('layoutComplete', () => {
 if (typeof lightGallery !== 'undefined') {
   lightGallery(document.getElementById('lightgallery'), {
     selector: '.grid-item-image',
-    googlePlus: false
+    googlePlus: false,
+    download: false // SR: disable download
   })
 }
