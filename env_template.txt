@@ -11,6 +11,7 @@ FOOTER_HTML_SUFFIX=info(at)my-domain.net
 COPYRIGHT_MESSAGE=© my name
 # For CloudFront distribution without a lambda function
 ALWAYS_ADD_INDEX_HTML_FOR_CLOUD_FRONT=true
+FOTOMOTO_STORE_ID=<my fotomoto store ID>
 
 # LOCAL
 GALLERY_LOCAL_PATH=path-to-my-local-gallery-photos

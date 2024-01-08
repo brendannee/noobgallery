@@ -444,6 +444,7 @@ const _createPugConfig = (galleryPath, galleryDest, isBottomLevel, items, isTopL
         googleAnalytics: process.env.GOOGLE_ANALYTICS_ID,
         footerHtml: process.env.FOOTER_HTML,
         footerHtmlSuffix: process.env.FOOTER_HTML_SUFFIX,
+        fotomotoStoreId: process.env.FOTOMOTO_STORE_ID
       },
       items,
       galleryName,
