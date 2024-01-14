@@ -125,6 +125,23 @@ Want to add metadata to a photo manually with the command line? Use [exiftool](h
 
     exiftool -XMP:Title="The Eiffel Tower" -XMP:Description="A nice description of this" /path/to/your/image.jpg 
 
+## Optional gallery summary and tags
+
+Optionally, extra gallery info can be added, simply by adding a text file `gallery.json` in the same folder as the photos.
+
+The format is like this:
+
+```json
+{
+  "summary": "Some shots taken on a walk through old Schiedam harbour, featuring old boats, bridges and restored windmills.",
+  "summaries": ["Summary paragraph 1", "Summary paragraph 2", "Summary paragraph 3"],
+  "tags": ["travel", "Schiedam", "NL", "photo-walk", "2023"]
+}
+```
+
+- if you want just one paragraph, then use `summary`
+- if you want multiple paragraphs, then instead use `summaries`
+
 ## Preprocessing and running locally
 
 A preprocessing and publishing task is included that takes a folder of folders that contain images and preps them and uploads them to Amazon S3 for use on a gallery website.
