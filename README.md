@@ -6,20 +6,18 @@ noobgallery is a static photo gallery powered by [lightgallery.js](https://sachi
 
 You can see noobgallery in action at https://picturethecity.com.
 
-## This fork
+## Features
 
-This fork adds a few more features to the original project:
-
+* simple photo gallery creation: just create a folder for each gallery, and copy your photos. noobgallery takes care of the rest.
+* responsive layout, support mobile and desktop
+* slideshow and zoom in/out
+* gallery summary & tags (via optional gallery.json for each gallery)
+* bread crumbs to navigate multple gallery levels
 * about page
 * error page
-* gallery summary & tags (via optional gallery.json for each gallery)
-* hide the image download button
-* do not upload original images
-* reduce largest size from 3000x to 2400x
+* does not upload original images
 * add optional copyright watermark
 * add optional fotomoto store links
-* tech: improved error handling during build
-* tech: support CloudFront without the need for lambda function
 
 ## Configuration
 
