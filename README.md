@@ -9,7 +9,7 @@ You can see noobgallery in action at https://picturethecity.com.
 ## Features
 
 * simple photo gallery creation: just create a folder for each gallery, and copy your photos. noobgallery takes care of the rest.
-* responsive layout, support mobile and desktop
+* responsive layout, supports mobile and desktop
 * slideshow and zoom in/out
 * gallery summary & tags (via optional gallery.json for each gallery)
 * bread crumbs to navigate multple gallery levels
@@ -77,6 +77,16 @@ Add a `.env` file with the following variables:
     GOOGLE_ANALYTICS_ID=YOUR_GOOGLE_ANALYTICS_ID
     SHOW_CREATED_DATE=true
     FOOTER_HTML=&copy; 2019 <a href="https://yourwebsite.com">A great photographer</a>
+    # For CloudFront distribution without a lambda function
+    ALWAYS_ADD_INDEX_HTML_FOR_CLOUD_FRONT=true
+
+You can also set these optional variables, or leave them empty like `this=`
+
+    FOOTER_HTML_SUFFIX=info(at)my-domain.net
+    COPYRIGHT_MESSAGE=© my name
+    FOTOMOTO_STORE_ID=<my fotomoto store ID OR empty>
+
+See the example file `env_template.txt` for the full set of variables.
 
 ## Setup
 
@@ -143,6 +153,7 @@ This will work as long as you specify your AWS S3 credentials in a `.env` file.
 
 After publishing, you can view your gallery using the AWS S3 URL you set up, which can be a custom domain name that you own. See more about [static hosting with Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html).
 
+To use CloudFront, set ALWAYS_ADD_INDEX_HTML_FOR_CLOUD_FRONT in `.env` to be true.
 If you want cleaner URLs, you can set up [Amazon CloudFront CDN and setup a Lambda@Edge function to set subdirectory indexes](https://aws.amazon.com/blogs/compute/implementing-default-directory-indexes-in-amazon-s3-backed-amazon-cloudfront-origins-using-lambdaedge/). If you do this, you can set `USE_INDEX_FILE` to false in the `.env` file and `index.html` will be removed from all links.
 
 ## Credits
