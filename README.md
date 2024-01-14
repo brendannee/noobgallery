@@ -28,9 +28,8 @@ noobgallery uses Amazon S3 to host images. You'll need to:
 * Create an Amazon S3 bucket.
 * Set the bucket to be publicly readable.
 * Enable static website hosting on the bucket, use `index.html` as the index document. Note the bucket URL.
-
-- Create an IAM user with a new policy to have programatic access to upload the site to the bucket.
-  - note: it is not recommended to use AmazonS3FullAccess, as that grants too much permission.
+* Create an IAM user with a new policy to have programatic access to upload the site to the bucket.
+  * note: it is not recommended to use AmazonS3FullAccess, as that grants too much permission.
 
 Example AWS Policy:
 
@@ -62,7 +61,9 @@ Example AWS Policy:
 }
 ```
 
-  - also see https://github.com/pgherveou/gulp-awspublish
+* to read more about the AWS access, see [gulp-awspublish](https://github.com/pgherveou/gulp-awspublish).
+
+* create a new Access key id and secret access key for that user.
 
 Add a `.env` file with the following variables:
 
