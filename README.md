@@ -6,6 +6,19 @@ noobgallery is a static photo gallery powered by [lightgallery.js](https://sachi
 
 You can see noobgallery in action at https://picturethecity.com.
 
+## Features
+
+* simple photo gallery creation: just create a folder for each gallery, and copy your photos. noobgallery takes care of the rest.
+* responsive layout, supports mobile and desktop
+* slideshow and zoom in/out
+* gallery summary & tags (via optional gallery.json for each gallery)
+* bread crumbs to navigate multple gallery levels
+* about page
+* error page
+* does not upload original images
+* add optional copyright watermark
+* add optional fotomoto store links
+
 ## Configuration
 
 noobgallery uses Amazon S3 to host images. You'll need to:
@@ -23,11 +36,13 @@ Example AWS Policy:
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Sid": "AllowUploaderUserToList",
       "Effect": "Allow",
       "Action": ["s3:ListBucket"],
       "Resource": ["arn:aws:s3:::BUCKETNAME"]
     },
     {
+      "Sid": "AllowUploaderUserToUpload",
       "Effect": "Allow",
       "Action": [
         "s3:PutObject",
@@ -62,6 +77,16 @@ Add a `.env` file with the following variables:
     GOOGLE_ANALYTICS_ID=YOUR_GOOGLE_ANALYTICS_ID
     SHOW_CREATED_DATE=true
     FOOTER_HTML=&copy; 2019 <a href="https://yourwebsite.com">A great photographer</a>
+    # For CloudFront distribution without a lambda function
+    ALWAYS_ADD_INDEX_HTML_FOR_CLOUD_FRONT=true
+
+You can also set these optional variables, or leave them empty like `this=`
+
+    FOOTER_HTML_SUFFIX=info(at)my-domain.net
+    COPYRIGHT_MESSAGE=© my name
+    FOTOMOTO_STORE_ID=<my fotomoto store ID OR empty>
+
+See the example file `env_template.txt` for the full set of variables.
 
 ## Setup
 
@@ -75,7 +100,7 @@ Create a folder to contain all your galleries, and then a folder for each galler
 
 Galleries will be sorted by `createDate` from the image EXIF data.
 
-If you want to specify which image should be the cover representing an entire gallery, name it `cover.jpg`. This is optional, if no file named `cover.jpg` is found it will use the first image chronologically.
+If you want to specify which image should be the cover representing an entire gallery, name it starting with `cover` - like `cover.IMG_1.jpg`. This is optional, if no such file is found, then it will use the first image chronologically.
 
 Example directory structure:
 
@@ -99,6 +124,23 @@ If an image has an XMP `Title` set, this will be used as the photo title. The XM
 Want to add metadata to a photo manually with the command line? Use [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/) to do:
 
     exiftool -XMP:Title="The Eiffel Tower" -XMP:Description="A nice description of this" /path/to/your/image.jpg 
+
+## Optional gallery summary and tags
+
+Optionally, extra gallery info can be added, simply by adding a text file `gallery.json` in the same folder as the photos.
+
+The format is like this:
+
+```json
+{
+  "summary": "Some shots taken on a walk through old Schiedam harbour, featuring old boats, bridges and restored windmills.",
+  "summaries": ["Summary paragraph 1", "Summary paragraph 2", "Summary paragraph 3"],
+  "tags": ["travel", "Schiedam", "NL", "photo-walk", "2023"]
+}
+```
+
+- if you want just one paragraph, then use `summary`
+- if you want multiple paragraphs, then instead use `summaries`
 
 ## Preprocessing and running locally
 
@@ -128,6 +170,7 @@ This will work as long as you specify your AWS S3 credentials in a `.env` file.
 
 After publishing, you can view your gallery using the AWS S3 URL you set up, which can be a custom domain name that you own. See more about [static hosting with Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html).
 
+To use CloudFront, set ALWAYS_ADD_INDEX_HTML_FOR_CLOUD_FRONT in `.env` to be true.
 If you want cleaner URLs, you can set up [Amazon CloudFront CDN and setup a Lambda@Edge function to set subdirectory indexes](https://aws.amazon.com/blogs/compute/implementing-default-directory-indexes-in-amazon-s3-backed-amazon-cloudfront-origins-using-lambdaedge/). If you do this, you can set `USE_INDEX_FILE` to false in the `.env` file and `index.html` will be removed from all links.
 
 ## Credits

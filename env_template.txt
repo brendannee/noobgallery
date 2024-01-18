@@ -1,0 +1,22 @@
+# NON SENSITIVE
+GALLERY_TITLE=My Photos
+GALLERY_DESCRIPTION=Photos by MY NAME
+AWS_REGION=my-region
+AWS_BUCKET=my-domain.net
+USE_INDEX_FILE=true
+FORCE_HTTPS=false
+SHOW_CREATED_DATE=true
+FOOTER_HTML=&copy; My Name <a href="http://my-domain.net/">my-domain.net</a>
+FOOTER_HTML_SUFFIX=info(at)my-domain.net
+COPYRIGHT_MESSAGE=© my name
+# For CloudFront distribution without a lambda function
+ALWAYS_ADD_INDEX_HTML_FOR_CLOUD_FRONT=true
+FOTOMOTO_STORE_ID=<my fotomoto store ID>
+
+# LOCAL
+GALLERY_LOCAL_PATH=path-to-my-local-gallery-photos
+
+# IS SENSITIVE
+AWS_ACCESS_KEY=xxx
+AWS_SECRET_ACCESS_KEY=xxx
+GOOGLE_ANALYTICS_ID=xxx

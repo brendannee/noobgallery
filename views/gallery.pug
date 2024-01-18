@@ -2,7 +2,10 @@ extends layout
 block content
   .gallery-wrapper
     h1.gallery-title= galleryTitle
-    .gallery-description= galleryDescription
+    .horizontal-container
+      .gallery-description= galleryDescription
+        span.breadcrumb= " "
+        a.breadcrumb(href='/about.html') [about]
     if !isTopLevel
       .breadcrumbs
         - var path = '/';
@@ -10,9 +13,21 @@ block content
           - path += `${crumb}/`
           if crumb === 'gallery'
             a.breadcrumb(href='/') Home
-          else 
+          else
             span.breadcrumb &raquo;
-            a.breadcrumb(href=path)= formatName(crumb)
+            if alwaysAddIndexHtml
+              a.breadcrumb(href=path + 'index.html')= formatName(crumb)
+            else
+              a.breadcrumb(href=path)= formatName(crumb)
+    if galleryExtraJson.summary
+      .gallery-extra-summary= galleryExtraJson.summary
+    if galleryExtraJson.summaries
+      each summary in galleryExtraJson.summaries
+        .gallery-extra-summary= summary
+    if galleryExtraJson.tags
+      .gallery-extra-tags-container
+        each tag in galleryExtraJson.tags
+          .gallery-extra-tag= '[' + tag + ']'
     #lightgallery.gallery
       #loading.lds-roller
         div
@@ -27,11 +42,11 @@ block content
       .gutter-sizer
       each item in items
         if item.type === 'image'
-          div(class=`grid-item grid-item-image ${item.imageSize.width > item.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${item.thumb} 200, ${item.medium} 600, ${item.large} 3000` data-src=`${item.fileName}` data-sub-html=item.subHtml)
-            a.photo-link(href=item.fileName title=item.title)
+          div(class=`grid-item grid-item-image ${item.imageSize.width > item.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${item.thumb} 200, ${item.medium} 600, ${item.large} 2400` data-src=`${item.large}` data-sub-html=item.subHtml)
+            a.photo-link(href=item.large title=item.title)
               img(src=`${item.medium}` data-aspect-ratio=`${item.imageSize.width/item.imageSize.height}` alt=item.title)
         else if item.type === 'gallery'
-          div(class=`grid-item ${item.imageSize.width > item.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${item.thumb} 200, ${item.medium} 600, ${item.large} 3000` data-src=`${item.fileName}`)
+          div(class=`grid-item ${item.imageSize.width > item.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${item.thumb} 200, ${item.medium} 600, ${item.large} 2400` data-src=`${item.large}`)
             a.photo-link(href=`${item.galleryUrl}/${config.useIndexFile ? 'index.html' : ''}` title=item.title)
               img(src=`${item.medium}` data-aspect-ratio=`${item.imageSize.width/item.imageSize.height}` alt=item.title)
               .photo-link-title= isTopLevel ? item.title : `Gallery: ${item.title}`

@@ -1,15 +1,25 @@
 require('dotenv').config()
 
+const fs = require('fs');
 const path = require('path');
 const util = require('util');
-const stream = require('stream');
 const untildify = require('untildify');
-const { readdir, readdirSync, statSync, readFileSync } = require('fs');
+const { readdir, statSync, readFileSync } = require('fs');
 const gulp = require('gulp');
+const plumber = require('gulp-plumber');
 const parallel = require('concurrent-transform');
 const mergeStream = require('merge-stream');
 const file = require('gulp-file');
 const debug = require('gulp-debug');
+// reduce debug noise
+const debugDetailed = (args) =>
+  debug(
+    {...args,
+    minimal: true,
+		showFiles: false
+  });
+const fancyLog = require('fancy-log');
+
 const rename = require('gulp-rename');
 const awspublish = require('gulp-awspublish');
 const PluginError = require('plugin-error');
@@ -26,15 +36,154 @@ const pug = require('gulp-pug');
 const readFolder = util.promisify(readdir);
 
 const gallerySource = untildify(process.env.GALLERY_LOCAL_PATH);
+if (!fs.existsSync(gallerySource))
+  throw `Path ${gallerySource} does not exist - please check env.GALLERY_LOCAL_PATH`;
+
 const galleryDest = './build';
 const imageExtensions = ['png','gif','jpeg','jpg','bmp'];
 const extensionGlob = `/*.{${imageExtensions.join(',')}}`;
 
-console.log(`Preparing: ${gallerySource}`);
+fancyLog(`Preparing: ${gallerySource}`);
 
-const largeWidth = 3000;
+const largeWidth = 2400;
 const mediumWidth = 800;
 const thumbWidth = 200;
+
+function writeCopyrightOnImage(pathToImageOrContents, imageFilePath, callback) {
+  if (!process.env.COPYRIGHT_MESSAGE)
+    return;
+
+  const width = 300;
+  const height = 50;
+  const label = process.env.COPYRIGHT_MESSAGE;
+
+  const svgForLabel = `
+  <svg width="${width}" height="${height}" style="border: 1px dashed black;">
+    <text font-size="20px" x="90%" y="50%" text-anchor="end" fill="#fff">${label}</text>
+  </svg>
+  `;
+
+  const svgForLabelBuffer = Buffer.from(svgForLabel);
+  sharp(pathToImageOrContents)
+    .withMetadata()
+    .rotate() // respect the EXIF orientation
+    .composite([{
+      input: svgForLabelBuffer,
+      gravity: 'southeast'
+  }])
+    .png()
+    .toBuffer()
+    .then(buffer => callback(buffer),
+      error => {
+      handleError(error, `Error adding copyright to image: ${imageFilePath}`);
+      return callback(); // continue anyway
+    });
+}
+
+errors = []
+function handleError(error, message) {
+  console.error(message);
+  console.error(error);
+  errors.push({
+    message,
+    error
+  });
+}
+
+function dumpErrors() {
+  if (errors.length === 0) {
+    fancyLog("NO errors occurred [ok]");
+  } else {
+    console.error(`${errors.length} errors occurred`);
+    console.error(errors);
+  }
+}
+
+function gulpWriteCopyrightOnImage() {
+  return through.obj((file, _encoding, callback) => {
+    if (file.isNull()) {
+      this.push(file)
+      return callback();
+    }
+
+    if (file.isStream()) {
+      this.emit('error', new PluginError('gulpSharp', "Received a stream... Streams are not supported. Sorry."));
+      return callback();
+    }
+
+    if (file.isBuffer()) {
+      try {
+        writeCopyrightOnImage(file.contents, file.path,
+          buffer => {
+            if (!buffer) {
+              handleError('(no buffer)', `  copyright fail - no buffer for image: ${file.path}`);
+              return callback(); // continue anyway
+            }
+            const newFile = new Vinyl({
+              cwd: file.cwd,
+              base: file.base,
+              path: file.path,
+              contents: buffer
+            });
+
+            callback(null, newFile);
+          });
+      } catch(error) {
+        handleError(error, `Error adding copyright to image 2: ${file.path}`);
+        return callback(); // continue anyway
+      }
+    }
+  });
+}
+
+function gulpAddImageToDelete() {
+  return through.obj((file, _encoding, callback) => {
+    if (file.isNull()) {
+      this.push(file)
+      return callback();
+    }
+
+    if (file.isStream()) {
+      this.emit('error', new PluginError('gulpAddImageToDelete', "Received a stream... Streams are not supported. Sorry."));
+      return callback();
+    }
+
+    if (!fs.existsSync(file.path)) {
+      handleError('(del)', `  gulpAddImageToDelete - file does not exist: ${file.path}`);
+      return callback(); // continue anyway
+    }
+
+    imageCopiesToDelete.push(file.path);
+    return callback(null, file); // continue
+  });
+}
+
+function gulpDelFile() {
+  return through.obj((file, _encoding, callback) => {
+    if (file.isNull()) {
+      this.push(file)
+      return callback();
+    }
+
+    if (file.isStream()) {
+      this.emit('error', new PluginError('del', "Received a stream... Streams are not supported. Sorry."));
+      return callback();
+    }
+
+    if (!fs.existsSync(file.path)) {
+      handleError('(del)', `  delete fail - file does not exist: ${file.path}`);
+      return callback(); // continue anyway
+    }
+
+    try {
+      del(file.path);
+      return callback(); // continue
+    } catch(error) {
+      handleError(error, `Error deleting file 1: ${file.path}`);
+      return callback(); // continue anyway
+    }
+  });
+};
 
 function gulpSharp(options){
   return through.obj((file, encoding, callback) => {
@@ -57,23 +206,33 @@ function gulpSharp(options){
     }
 
     if (file.isBuffer()) {
-      const image = sharp(file.contents);
+      try {
+        const image = sharp(file.contents);
 
-      image
-        .withMetadata()
-        .rotate()
-        .resize(options.resize)
-        .jpeg({quality: options.quality || 80})
-        .toBuffer()
-        .then(function(data) {
-          const newFile = new Vinyl({
-            cwd: file.cwd,
-            base: file.base,
-            path: file.path,
-            contents: data
-          });
-          callback(null, newFile);
-      });
+        image
+          .withMetadata()
+          .rotate()
+          .resize(options.resize)
+          .jpeg({quality: options.quality || 80})
+          .toBuffer()
+          .then(data => {
+            const newFile = new Vinyl({
+              cwd: file.cwd,
+              base: file.base,
+              path: file.path,
+              contents: data
+            });
+
+            callback(null, newFile);
+        },
+        error => {
+          handleError(error, `Error resizing image: ${file.path}`);
+          return callback(); // continue anyway
+        });
+      } catch(error) {
+        handleError(error, `Error resizing image 2: ${file.path}`);
+        return callback(); // continue anyway
+      }
     }
   });
 }
@@ -82,7 +241,7 @@ const summarizeImage = async (galleryPath, fileName) => {
   const buffer = readFileSync(path.join(galleryPath, 'large', fileName));
   const xmp = await xmpReader.fromBuffer(buffer)
   let subHtml = '';
-  const galleryName = galleryPath.split(path.sep).pop();
+  const galleryName = _getGalleryName(galleryPath);
   const photoTitle = path.basename(fileName, path.extname(fileName));
   let title = formatName(galleryName);
 
@@ -169,7 +328,8 @@ const getCoverImage = galleryPath => {
 }
 
 const createGalleryJson = async galleryPath => {
-  const galleryName = galleryPath.split(path.sep).pop();
+  fancyLog(` creating gallery JSON at ` + galleryPath + '...')
+  const galleryName = _getGalleryName(galleryPath);
   const isTopLevel = galleryName === 'gallery';
   const galleryPathLarge = path.join(galleryPath, 'large');
   const files = await readFolder(galleryPathLarge)
@@ -232,27 +392,47 @@ const formatName = name => {
   return name.replace(/\_/g, ' ').split(' ').map(word => _.capitalize(word)).join(' ');
 }
 
-const createGalleryHtml = async galleryPath => {
-  const subfolders = await readFolder(galleryPath);
-
-  await Promise.all(subfolders.map(async fileName => {
-    const filePath = path.join(galleryPath, fileName);
-    if (['large', 'medium', 'thumbs'].includes(fileName)) {
-      return false;
+const readGalleryJson = galleryPath => {
+  let extraJson = "{}";
+  const pathToExtraJson = path.join(galleryPath, 'gallery.json');
+  try {
+    if (fs.existsSync(pathToExtraJson))
+    {
+      extraJson = readFileSync(pathToExtraJson, 'utf8');
     }
+    parsed = JSON.parse(extraJson);
+    return parsed;
+  } catch(error) {
+    handleError(error, `Error parsing JSON at ${pathToExtraJson}`);
+    return {}; // continue anyway
+  }
+};
 
-    if (statSync(filePath).isDirectory()) {
-      await createGalleryHtml(filePath);
-    }
-  }));
+const _getGalleryName = (galleryPath) => galleryPath.split(path.sep).pop();
 
+const createPugConfigForGallery = (galleryPath, galleryDest, isBottomLevel) => {
   const items = JSON.parse(readFileSync(path.join(galleryPath, 'index.json'), 'utf8'));
-  const galleryName = galleryPath.split(path.sep).pop();
-  const isTopLevel = galleryName === 'gallery';
+  const isTopLevel = _getGalleryName(galleryPath) === 'gallery';
+  return _createPugConfig(galleryPath, galleryDest, isBottomLevel, items, isTopLevel);
+};
+
+const createPugConfigForOtherPage = (pageDirPath, galleryDest) => {
+  const isBottomLevel = false;
+  const isTopLevel = true;
+  return _createPugConfig(pageDirPath, galleryDest, isBottomLevel, [], isTopLevel);
+};
+
+const _createPugConfig = (galleryPath, galleryDest, isBottomLevel, items, isTopLevel) => {
+  const galleryExtraJson = readGalleryJson(galleryPath);
+  const galleryName = _getGalleryName(galleryPath);
   const galleryTitle = isTopLevel ? process.env.GALLERY_TITLE : `${formatName(galleryName)} - ${process.env.GALLERY_TITLE}`;
   const breadcrumb = path.relative(galleryDest, galleryPath);
 
-  const pugConfig = {
+  isBottomLevel = isBottomLevel && !isTopLevel;
+  const isForSale = !galleryExtraJson.tags || galleryExtraJson.tags.indexOf('not-for-sale') === -1;
+  const showSaleLinks = isForSale && isBottomLevel;
+
+  return {
     locals: {
       formatName
     },
@@ -263,6 +443,8 @@ const createGalleryHtml = async galleryPath => {
         forceHttps: process.env.FORCE_HTTPS === 'true',
         googleAnalytics: process.env.GOOGLE_ANALYTICS_ID,
         footerHtml: process.env.FOOTER_HTML,
+        footerHtmlSuffix: process.env.FOOTER_HTML_SUFFIX,
+        fotomotoStoreId: process.env.FOTOMOTO_STORE_ID
       },
       items,
       galleryName,
@@ -271,26 +453,101 @@ const createGalleryHtml = async galleryPath => {
       title: `${galleryTitle} : ${process.env.GALLERY_DESCRIPTION}`,
       breadcrumb,
       isTopLevel,
+      showSaleLinks,
+      galleryExtraJson,
+      alwaysAddIndexHtml: process.env.ALWAYS_ADD_INDEX_HTML_FOR_CLOUD_FRONT === 'true'
     }
   };
+};
 
-  const destination = isTopLevel ? galleryDest : galleryPath;
+const createGalleryHtml = async galleryPath => {
+  fancyLog(` creating gallery HTML at ` + galleryPath + '...')
+
+  const subfolders = await readFolder(galleryPath);
+
+  let isBottomLevel = true;
+
+  await Promise.all(subfolders.map(async fileName => {
+    const filePath = path.join(galleryPath, fileName);
+    if (['large', 'medium', 'thumbs'].includes(fileName)) {
+      return false;
+    }
+
+    if (statSync(filePath).isDirectory()) {
+      isBottomLevel = false;
+      await createGalleryHtml(filePath);
+    }
+  }));
+
+  const pugConfig = createPugConfigForGallery(galleryPath, galleryDest, isBottomLevel);
+
+  const destination = pugConfig.data.isTopLevel ? galleryDest : galleryPath;
 
   return gulp.src('views/gallery.pug')
     .pipe(rename('index.html'))
     .pipe(pug(pugConfig))
     .pipe(gulp.dest(destination))
-    .pipe(debug({title: 'Created gallery HTML'}))
-}
+    .pipe(debug({title: 'Created gallery HTML'}));
+};
 
+const createAboutHtml = async dirPath => {
+  fancyLog(` creating about HTML at ` + dirPath + '...')
+
+  const pugConfig = createPugConfigForOtherPage(dirPath, galleryDest);
+
+  return gulp.src('views/about.pug')
+    .pipe(rename('about.html'))
+    .pipe(pug(pugConfig))
+    .pipe(gulp.dest(galleryDest))
+    .pipe(debug({title: 'Created about HTML'}));
+};
+
+const createErrorHtml = async errorDirPath => {
+  fancyLog(` creating error HTML at ` + errorDirPath + '...')
+
+  const pugConfig = createPugConfigForOtherPage(errorDirPath, galleryDest);
+
+  return gulp.src('views/error.pug')
+    .pipe(rename('error.html'))
+    .pipe(pug(pugConfig))
+    .pipe(gulp.dest(galleryDest))
+    .pipe(debug({title: 'Created error HTML'}));
+};
+
+let imageCopiesToDelete = []
 gulp.task('copyOriginals', () => {
   return gulp.src(path.join(gallerySource, '**', extensionGlob), {nocase: true})
     .pipe(gulp.dest(path.join(galleryDest, 'gallery')))
-    .pipe(debug({title: 'Copied full versions of photos'}));
+    .pipe(parallel(gulpAddImageToDelete()), CORES)
+    .pipe(debugDetailed({title: 'Copied full versions of photos'}));
+});
+
+gulp.task('copyGalleryJson', () => {
+  return gulp.src(path.join(gallerySource, '**', '/gallery.json'), {nocase: true})
+    .pipe(gulp.dest(path.join(galleryDest, 'gallery')))
+    .pipe(debugDetailed({title: 'Copied gallery.json extra JSON for gallery'}));
+});
+
+gulp.task('writeCopyright', () => {
+  return gulp.src(path.join(galleryDest, '**', extensionGlob), {nocase: true})
+  .pipe(plumber({ errorHandler: true }))
+  .pipe(parallel(gulpWriteCopyrightOnImage()), CORES)
+  .pipe(gulp.dest(file => file.base )) // write back to same location
+  .pipe(debugDetailed({title: 'Write copyright on image'}));
+});
+
+// Delete the copies of originals, as not want them uploaded to S3 where they could be downloaded
+gulp.task('deleteOriginalCopies', () => {
+  return gulp.src(imageCopiesToDelete, {nocase: true})
+  .pipe(plumber({ errorHandler: true }))
+  .pipe(parallel(gulpDelFile()), CORES)
+  .pipe(gulp.dest(file => file.base )) // write back to same location
+  .pipe(debugDetailed({title: 'Delete copy of original image'}));
 });
 
 gulp.task('large', () => {
-  return gulp.src(path.join(gallerySource, '**', extensionGlob), {nocase: true})
+  return gulp.src(path.join(galleryDest, '**', extensionGlob), {nocase: true})
+    .pipe(plumber({ errorHandler: true }))
     .pipe(parallel(gulpSharp({
       resize: {
         width: largeWidth,
@@ -305,12 +562,13 @@ gulp.task('large', () => {
     .pipe(rename(filePath => {
       filePath.dirname = path.join(filePath.dirname, 'large');
     }))
-    .pipe(gulp.dest('gallery', {cwd: galleryDest}))
-    .pipe(debug({title: 'Created large image'}));
+    .pipe(gulp.dest(file => file.base )) // write back to same location
+    .pipe(debugDetailed({title: 'Created large image'}));
 });
 
 gulp.task('medium', () => {
-  return gulp.src(path.join(gallerySource, '**', extensionGlob), {nocase: true})
+  return gulp.src(path.join(galleryDest, '**', extensionGlob), {nocase: true})
+    .pipe(plumber({ errorHandler: true }))
     .pipe(parallel(gulpSharp({
       resize: {
         width: mediumWidth,
@@ -324,12 +582,13 @@ gulp.task('medium', () => {
     .pipe(rename(filePath => {
       filePath.dirname = path.join(filePath.dirname, 'medium');
     }))
-    .pipe(gulp.dest('gallery', {cwd: galleryDest}))
-    .pipe(debug({title: 'Created medium image'}));
+    .pipe(gulp.dest(file => file.base )) // write back to same location
+    .pipe(debugDetailed({title: 'Created medium image'}));
 });
 
 gulp.task('thumb', () => {
-  return gulp.src(path.join(gallerySource, '**', extensionGlob), {nocase: true})
+  return gulp.src(path.join(galleryDest, '**', extensionGlob), {nocase: true})
+    .pipe(plumber({ errorHandler: true }))
     .pipe(parallel(gulpSharp({
       resize: {
         width: thumbWidth,
@@ -343,12 +602,13 @@ gulp.task('thumb', () => {
     .pipe(rename(filePath => {
       filePath.dirname = path.join(filePath.dirname, 'thumbs');
     }))
-    .pipe(gulp.dest('gallery', {cwd: galleryDest}))
-    .pipe(debug({title: 'Created thumbnail image'}));
+    .pipe(gulp.dest(file => file.base )) // write back to same location
+    .pipe(debugDetailed({title: 'Created thumbnail image'}));
 });
 
+gulp.task('aboutHtml', () => createAboutHtml(galleryDest));
+gulp.task('errorHtml', () => createErrorHtml(galleryDest));
 gulp.task('galleryJson', () => createGalleryJson(path.join(galleryDest, 'gallery')));
-
 gulp.task('galleryHtml', () => createGalleryHtml(path.join(galleryDest, 'gallery')));
 
 gulp.task('copyStatic', () => {
@@ -449,10 +709,15 @@ gulp.task('clean', () => {
   return del(galleryDest);
 });
 
+gulp.task('dumpErrors', callback => {
+  dumpErrors();
+  callback();
+});
+
 gulp.task('resize', gulp.parallel('large', 'medium', 'thumb'));
 
-gulp.task('html', gulp.series('galleryJson', 'galleryHtml', gulp.parallel('copyStatic', 'favicon')))
+gulp.task('html', gulp.series('galleryJson', gulp.parallel('aboutHtml', 'errorHtml', 'galleryHtml'), gulp.parallel('copyStatic', 'favicon')))
 
-gulp.task('build', gulp.series('clean', 'copyOriginals', 'resize', 'html'));
+gulp.task('build', gulp.series('clean', gulp.parallel('copyOriginals', 'copyGalleryJson'), 'writeCopyright', 'resize', 'deleteOriginalCopies', 'html', 'dumpErrors'));
 
-gulp.task('deploy', gulp.series('build', 'publishAWS'));
+gulp.task('deploy', gulp.series('build', 'publishAWS', 'dumpErrors'));

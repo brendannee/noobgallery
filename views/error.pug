@@ -2,6 +2,12 @@ extends layout
 block content
   .gallery-wrapper
     h1.gallery-title= galleryTitle
-    .gallery-description= description
+    .gallery-description= galleryDescription
+    .horizontal-container
+      .breadcrumbs
+        span.breadcrumb &raquo;
+        a.breadcrumb(href='/') Home
+        a.breadcrumb(href='/about.html') [about]
     .warning
-      h3 Not Found
+      h3 Oops! that page was not found
+      a.breadcrumb(href='/') Go Home

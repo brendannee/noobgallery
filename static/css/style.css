@@ -280,3 +280,29 @@ footer {
 footer a {
   color: #888;
 }
+
+/* BEGIN SR ADDED */
+.gallery-extra-summary {
+  font-style: italic;
+  font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 10px 0;
+  text-wrap: wrap;
+}
+.gallery-extra-tags-container {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: flex;
+  justify-content: flex-start;
+}
+.gallery-extra-tag {
+  padding: 5px 3px;
+}
+a.FotomotoBarLink {
+  color: white !important;
+}
+.horizontal-container {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: flex;
+  justify-content: flex-start;
+}

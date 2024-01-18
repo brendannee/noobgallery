@@ -3,13 +3,13 @@ html
   head
     if config.googleAnalytics
       script(async src=`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics}`)
-      script=`var googleAnalytics='${config.googleAnalytics}';`
+      script=`var _myGoogleAnalyticsID='${config.googleAnalytics}';`
       script.
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
-        gtag('config', googleAnalytics);
+        gtag('config', _myGoogleAnalyticsID);
 
     title= title
     meta(charset="utf-8")
@@ -29,8 +29,19 @@ html
 
     block content
 
-    footer 
+    footer
       if config.footerHtml
         span!= config.footerHtml
         span &nbsp;|&nbsp;
       span Powered by <a href="https://github.com/brendannee/noobgallery">noobgallery</a>
+      if config.footerHtmlSuffix
+        span &nbsp;|&nbsp;
+        span!= config.footerHtmlSuffix
+
+    //- Fotomoto - to sell images
+    if showSaleLinks
+      if config.fotomotoStoreId
+        - script_url = "//widget.fotomoto.com/stores/script/" + config.fotomotoStoreId + ".js"
+        script(src=script_url)
+        - no_js_script_url = "https://my.fotomoto.com/store/" + config.fotomotoStoreId
+        noscript If Javascript is disabled in your browser, to place orders please visit the page where I <a href='#{no_js_script_url}'>sell my photos</a>, powered by <a href='https://my.fotomoto.com'>Fotomoto</a>.
