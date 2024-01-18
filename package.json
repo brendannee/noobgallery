@@ -1,6 +1,6 @@
 {
   "name": "noobgallery",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "A minimalistic photo gallery with images stored on Amazon S3 and just the features you want.",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,10 @@
     "Amazon S3"
   ],
   "private": false,
-  "author": "Brendan Nee <brendan@blinktag.com>",
+  "author": "Brendan Nee <brendan@blinktag.com> (https://picturethecity.com)",
+  "contributors": [
+    "Sean Ryan <str_ie@yahoo.co.uk> (https://everydayphotos.net)"
+  ],
   "license": "MIT",
   "dependencies": {
     "concurrent-transform": "^1.0.0",
