@@ -33,7 +33,66 @@ const through = require('through2');
 const sharp = require('sharp');
 const del = require('del');
 const pug = require('gulp-pug');
-const readFolder = util.promisify(readdir);
+
+function tryParseYearAndMonth(filename) {
+  // yyyy-mm Name
+  const regexYYYYMM = /^(\d){4}-(\d){2}/gm;
+
+  let match = filename.match(regexYYYYMM);
+  if (match) {
+    return match[0];
+  }
+
+  // yyyy Name
+  const regexYYYY = /^(\d){4}/gm;
+  match = filename.match(regexYYYY);
+  if (match) {
+    return match[0];
+  }
+
+  // Name
+  return null;
+}
+
+// Sort the directory, depending on the name format:
+// - yyyy: if name starts with a year, then sort descending by year, ascending by remainder.
+// - yyyy-mm: if name starts with a year-month, then sort descending by year, descending by month then ascending by remainder.
+// - else sort ascending.
+// - this provides a simple way to control the order of galleries, with 'most recent first'.
+function readdirAndSort (path_in, callback_fun) {
+  const cbAndSort = (err, files) => {
+    if (err) {
+      callback_fun(err, files);
+      return;
+    }
+
+    files.sort(function(a, b) {
+      a = path.basename(a);
+      b = path.basename(b);
+
+      const yearAndMonthA = tryParseYearAndMonth(a);
+      const yearAndMonthB = tryParseYearAndMonth(b);
+
+      if (yearAndMonthA && !yearAndMonthB) {
+        return -1;
+      }
+      if (yearAndMonthB && !yearAndMonthA) {
+        return 1;
+      }
+
+      if(yearAndMonthA < yearAndMonthB) { return 1; }
+      if(yearAndMonthB < yearAndMonthA) { return -1; }
+
+      return a.localeCompare(b);
+    });
+
+    callback_fun(err, files);
+  };
+
+  readdir(path_in, cbAndSort);
+}
+
+const readFolder = util.promisify(readdirAndSort);
 
 const gallerySource = untildify(process.env.GALLERY_LOCAL_PATH);
 if (!fs.existsSync(gallerySource))
@@ -396,8 +455,7 @@ const readGalleryJson = galleryPath => {
   let extraJson = "{}";
   const pathToExtraJson = path.join(galleryPath, 'gallery.json');
   try {
-    if (fs.existsSync(pathToExtraJson))
-    {
+    if (fs.existsSync(pathToExtraJson)) {
       extraJson = readFileSync(pathToExtraJson, 'utf8');
     }
     parsed = JSON.parse(extraJson);
