@@ -98,7 +98,16 @@ Install dependencies
 
 Create a folder to contain all your galleries, and then a folder for each gallery. The name of the folder will be the name of the gallery, with underscores converted to spaces.
 
-Galleries will be sorted by `createDate` from the image EXIF data.
+* note on the sorting of gallery folders:
+  - if the gallery name starts with a year and month, or just a year, then the year and month will be used to sort the gallery before or after other galleries.
+  - galleries with a year and month are shown first, and sorted to have the most recent date first
+    - for example: galleries `2023-11_-_My_Photos, 2023-12_-_My_Photos` will be sorted so that `2023-12_-_My_Photos` will appear before `2023-11_-_My_Photos`
+  - galleries with only a year will appear next for that year, sorted to have the most recent data first
+    - for example: galleries `2024, 2023, 2023-11_-_My_Photos, 2023-12_-_My_Photos_B, 2023-12_-_My_Photos_A` will be sorted to `2024, 2023-12_-_My_Photos_A, 2023-12_-_My_Photos_B, 2023-11_-_My_Photos, 2023`
+  - galleries with no year or month will appear next, sorted alphabetically
+    - for example: galleries `2024, 2023, A_Photos, B_Photos, 2023-11_-_My_Photos, 2023-12_-_My_Photos` will be sorted to `2024, 2023-12_-_My_Photos, 2023-11_-_My_Photos, 2023, A_Photos, B_Photos`
+
+Within galleries, photos are sorted by `createDate` from the image EXIF data.
 
 If you want to specify which image should be the cover representing an entire gallery, name it starting with `cover` - like `cover.IMG_1.jpg`. This is optional, if no such file is found, then it will use the first image chronologically.
 
