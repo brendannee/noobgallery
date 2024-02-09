@@ -1,0 +1,58 @@
+extends layout
+block content
+  .gallery-wrapper
+    h1.gallery-title= galleryTitle
+    .horizontal-container
+      .gallery-description= galleryDescription
+        span.breadcrumb= " "
+        a.breadcrumb(href='/about.html') [about]
+    .breadcrumbs
+      - var path = '/';
+      each crumb in breadcrumb.split('/')
+        - path += `${crumb}/`
+        if crumb === 'gallery'
+          a.breadcrumb(href='/') Home
+        else
+          span.breadcrumb &raquo;
+          =" "
+          |
+          = formatName(crumb)
+
+    h3= '[' + tagThisPage + '] galleries'
+
+    #lightgallery.gallery
+      #loading.lds-roller
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+      .grid-sizer
+      .gutter-sizer
+      each tagGallery in tagGalleries
+        h4= tagGallery.galleryName
+          div(class=`grid-item ${tagGallery.coverImage.imageSize.width > tagGallery.coverImage.imageSize.height * 2 ? 'grid-item--width2' : ''}` data-responsive=`${tagGallery.coverImage.thumb} 200, ${tagGallery.coverImage.medium} 600, ${tagGallery.coverImage.large} 2400` data-src=`${tagGallery.coverImage.large}`)
+            a.photo-link(href=`${tagGallery.galleryUrl}/${config.useIndexFile ? 'index.html' : ''}` title=tagGallery.title)
+              img(src=`${tagGallery.coverImage.medium}` data-aspect-ratio=`${tagGallery.coverImage.imageSize.width/tagGallery.coverImage.imageSize.height}` alt=tagGallery.title)
+              .photo-link-title= `Gallery: ${tagGallery.title}`
+
+    if galleryExtraJson.tags
+      .gallery-extra-tags-container
+        each tag in galleryExtraJson.tags
+          .gallery-extra-tag
+            a.gallery-extra-tag(href= '/gallery/' + getTagHtmlFilename(tag))= '[' + tag + ']'
+
+  script(src=`${config.assetPath}/masonry-layout/masonry.pkgd.min.js`)
+  script(src=`${config.assetPath}/imagesloaded/imagesloaded.pkgd.min.js`)
+  script(src=`${config.assetPath}/lightgallery.js/js/lightgallery.min.js`)
+  script(src=`${config.assetPath}/lg-thumbnail.js/lg-thumbnail.min.js`)
+  script(src=`${config.assetPath}/lg-autoplay.js/lg-autoplay.min.js`)
+  script(src=`${config.assetPath}/lg-fullscreen.js/lg-fullscreen.min.js`)
+  script(src=`${config.assetPath}/lg-pager.js/lg-pager.min.js`)
+  script(src=`${config.assetPath}/lg-zoom.js/lg-zoom.min.js`)
+  script(src=`${config.assetPath}/lg-hash.js/lg-hash.min.js`)
+  script(src=`${config.assetPath}/lg-share.js/lg-share.min.js`)
+  script(src=`${config.assetPath}/js/main.js`)

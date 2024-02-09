@@ -24,10 +24,13 @@ block content
     if galleryExtraJson.summaries
       each summary in galleryExtraJson.summaries
         .gallery-extra-summary= summary
-    if galleryExtraJson.tags
-      .gallery-extra-tags-container
-        each tag in galleryExtraJson.tags
-          .gallery-extra-tag= '[' + tag + ']'
+    if !isTopLevel
+      if galleryExtraJson.tags
+        .gallery-extra-tags-container
+          each tag in galleryExtraJson.tags
+            .gallery-extra-tag
+              a.gallery-extra-tag(href= '/gallery/' + getTagHtmlFilename(tag))= '[' + tag + ']'
+
     #lightgallery.gallery
       #loading.lds-roller
         div
@@ -50,7 +53,14 @@ block content
             a.photo-link(href=`${item.galleryUrl}/${config.useIndexFile ? 'index.html' : ''}` title=item.title)
               img(src=`${item.medium}` data-aspect-ratio=`${item.imageSize.width/item.imageSize.height}` alt=item.title)
               .photo-link-title= isTopLevel ? item.title : `Gallery: ${item.title}`
-            
+
+    if isTopLevel
+      if galleryExtraJson.tags
+        .gallery-extra-tags-container
+          each tag in galleryExtraJson.tags
+            .gallery-extra-tag
+              a.gallery-extra-tag(href= '/gallery/' + getTagHtmlFilename(tag))= '[' + tag + ']'
+
   script(src=`${config.assetPath}/masonry-layout/masonry.pkgd.min.js`)
   script(src=`${config.assetPath}/imagesloaded/imagesloaded.pkgd.min.js`)
   script(src=`${config.assetPath}/lightgallery.js/js/lightgallery.min.js`)
