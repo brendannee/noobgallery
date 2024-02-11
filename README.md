@@ -13,6 +13,7 @@ You can see noobgallery in action at https://picturethecity.com.
 * slideshow and zoom in/out
 * gallery summary & tags (via optional gallery.json for each gallery)
 * bread crumbs to navigate multple gallery levels
+* navigate galleries via tags
 * about page
 * error page
 * does not upload original images

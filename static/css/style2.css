@@ -293,9 +293,18 @@ footer a {
 	display: -moz-flex;
 	display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
 }
 .gallery-extra-tag {
   padding: 5px 3px;
+}
+a.gallery-extra-tag {
+  color: #ccc;
+  text-decoration: none;
+}
+a.gallery-extra-tag:hover {
+  color: #ddd;
+  text-decoration: underline;
 }
 a.FotomotoBarLink {
   color: white !important;
@@ -305,4 +314,21 @@ a.FotomotoBarLink {
 	display: -moz-flex;
 	display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.about-container {
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.about-container {
+  color: #ccc;
+}
+a.about-container {
+  color: #ccc;
+  text-decoration: none;
+}
+a.about-container:hover {
+  color: #ddd;
+  text-decoration: underline;
 }

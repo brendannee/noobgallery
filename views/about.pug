@@ -7,10 +7,16 @@ block content
         .breadcrumbs
             span.breadcrumb= " "
             a.breadcrumb(href='/') [Home]
+    if galleryExtraJson.tags
+      .gallery-extra-tags-container
+        each tag in galleryExtraJson.tags
+          .gallery-extra-tag
+            a.gallery-extra-tag(href= '/gallery/' + getTagHtmlFilename(tag))= '[' + tag + ']'
 
-    h3 My Photos is a site to show photos taken from ordinary scenes of beauty.
+    .about-container
+        h3 My Photos is a site to show photos taken from ordinary scenes of beauty.
 
-    p Photos taken by MY NAME.
+        p Photos taken by MY NAME.
 
-    p I am sharing these photos, in the hope they may bring you some joy!
+        p I am sharing these photos, in the hope they may bring you some joy!
 
