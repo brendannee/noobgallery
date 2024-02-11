@@ -19,7 +19,6 @@ const debugDetailed = (args) =>
     minimal: true,
 		showFiles: false
   });
-const es = require('event-stream');
 const fancyLog = require('fancy-log');
 
 const rename = require('gulp-rename');
@@ -660,7 +659,7 @@ const createGalleryTagsHtmlWithFilter = async (galleryPath, filterTags) => {
   }));
 
   // Merge all streams and output to files
-  es.merge(streams)
+  mergeStream(streams)
     .pipe(gulp.dest(path.join(galleryDest, 'gallery')))
     .pipe(debug({title: 'Created gallery tag HTML'}));
 };
