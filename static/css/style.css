@@ -1,6 +1,9 @@
 body {
   background-color: #000;
-  font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Frutiger, 'Frutiger Linotype', Univers, Calibri, 'Gill Sans',
+    'Gill Sans MT', 'Myriad Pro', Myriad, 'DejaVu Sans Condensed',
+    'Liberation Sans', 'Nimbus Sans L', Tahoma, Geneva, 'Helvetica Neue',
+    Helvetica, Arial, sans-serif;
   margin: 0;
   color: #ffffff;
 }
@@ -90,7 +93,7 @@ a.breadcrumb:hover {
   transform-origin: 32px 32px;
 }
 .lds-roller div:after {
-  content: " ";
+  content: ' ';
   display: block;
   position: absolute;
   width: 6px;
@@ -231,14 +234,14 @@ a.breadcrumb:hover {
 }
 
 .gallery .grid-item .photo-link {
-  border: 2px solid #FFF;
+  border: 2px solid #fff;
   border-radius: 2px;
   display: block;
   overflow: hidden;
 }
 
 .gallery.gallery-index .grid-item .photo-link {
-  background: linear-gradient(-180deg, rgba(0,0,0,0) 53%, #000 100%);
+  background: linear-gradient(-180deg, rgba(0, 0, 0, 0) 53%, #000 100%);
 }
 
 .gallery .grid-item .photo-link > img {
@@ -256,7 +259,7 @@ a.breadcrumb:hover {
 }
 
 .gallery .grid-item .photo-link-title {
-  color: #FFFFFF;
+  color: #ffffff;
   text-align: center;
   padding: 7px 10px;
   text-decoration: none;
@@ -284,14 +287,17 @@ footer a {
 /* BEGIN SR ADDED */
 .gallery-extra-summary {
   font-style: italic;
-  font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Frutiger, 'Frutiger Linotype', Univers, Calibri, 'Gill Sans',
+    'Gill Sans MT', 'Myriad Pro', Myriad, 'DejaVu Sans Condensed',
+    'Liberation Sans', 'Nimbus Sans L', Tahoma, Geneva, 'Helvetica Neue',
+    Helvetica, Arial, sans-serif;
   margin: 10px 0;
   text-wrap: wrap;
 }
 .gallery-extra-tags-container {
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
 }
@@ -310,9 +316,9 @@ a.FotomotoBarLink {
   color: white !important;
 }
 .horizontal-container {
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
 }

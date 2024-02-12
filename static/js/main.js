@@ -1,5 +1,5 @@
 function setImageHeight() {
-  document.querySelectorAll('.grid-item img').forEach(image => {
+  document.querySelectorAll('.grid-item img').forEach((image) => {
     const height = Math.round(image.offsetWidth / image.dataset.aspectRatio)
     image.setAttribute('height', height)
   })
@@ -13,12 +13,12 @@ const masonryLayout = new Masonry(document.querySelector('.gallery'), {
   itemSelector: '.grid-item',
   columnWidth: '.grid-sizer',
   gutter: '.gutter-sizer',
-  percentPosition: true
+  percentPosition: true,
 })
 
 imagesLoaded(document.querySelector('.gallery'), () => {
   masonryLayout.layout()
-  document.querySelectorAll('.grid-item').forEach(image => {
+  document.querySelectorAll('.grid-item').forEach((image) => {
     image.style.visibility = 'visible'
   })
   document.getElementById('loading').style.display = 'none'
@@ -32,6 +32,6 @@ if (typeof lightGallery !== 'undefined') {
   lightGallery(document.getElementById('lightgallery'), {
     selector: '.grid-item-image',
     googlePlus: false,
-    download: false // SR: disable download
+    download: false, // SR: disable download
   })
 }
