@@ -112,9 +112,6 @@ const mediumWidth = 800;
 const thumbWidth = 200;
 
 function writeCopyrightOnImage(pathToImageOrContents, imageFilePath, callback) {
-  if (!process.env.COPYRIGHT_MESSAGE)
-    return;
-
   const width = 300;
   const height = 50;
   const label = process.env.COPYRIGHT_MESSAGE;
@@ -163,6 +160,10 @@ function dumpErrors() {
 
 function gulpWriteCopyrightOnImage() {
   return through.obj((file, _encoding, callback) => {
+    if (!process.env.COPYRIGHT_MESSAGE) {
+      return callback();
+    }
+
     if (file.isNull()) {
       this.push(file)
       return callback();
