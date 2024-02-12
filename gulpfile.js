@@ -19,7 +19,6 @@ const debugDetailed = (args) =>
     minimal: true,
 		showFiles: false
   });
-const es = require('event-stream');
 const fancyLog = require('fancy-log');
 
 const rename = require('gulp-rename');
@@ -35,6 +34,8 @@ const through = require('through2');
 const sharp = require('sharp');
 const del = require('del');
 const pug = require('gulp-pug');
+
+const buildId = (new Date()).toISOString().split('.')[0].replace(':', '').replace(':',''); // A unique ID for this build, for cache-busting.
 
 function tryParseYearAndMonth(filename) {
   // yyyy-mm Name
@@ -523,6 +524,7 @@ const _createPugConfig = async (galleryPath, galleryDest, isBottomLevel, items, 
     data: {
       config: {
         assetPath: path.relative(galleryPath, path.join(galleryDest, 'static')),
+        buildId,
         useIndexFile: process.env.USE_INDEX_FILE === 'true',
         forceHttps: process.env.FORCE_HTTPS === 'true',
         googleAnalytics: process.env.GOOGLE_ANALYTICS_ID,
@@ -657,7 +659,7 @@ const createGalleryTagsHtmlWithFilter = async (galleryPath, filterTags) => {
   }));
 
   // Merge all streams and output to files
-  es.merge(streams)
+  mergeStream(streams)
     .pipe(gulp.dest(path.join(galleryDest, 'gallery')))
     .pipe(debug({title: 'Created gallery tag HTML'}));
 };
@@ -797,6 +799,11 @@ gulp.task('copyStatic', () => {
       dest: path.join(galleryDest, 'static')
     },
     {
+      src: './static/css/style.css',
+      dest: path.join(galleryDest, 'static', `css`),
+      rename: `style.${buildId}.css` // cache-bust the CSS (especially for mobile browers which cling on to old CSS files)
+    },
+    {
       src: './node_modules/lightgallery.js/dist/**/*.*',
       dest: path.join(galleryDest, 'static', 'lightgallery.js')
     },
@@ -839,8 +846,14 @@ gulp.task('copyStatic', () => {
   ]
 
   return mergeStream(libraries.map(library => {
-    return gulp.src(library.src)
-      .pipe(gulp.dest(library.dest));
+    if (library.rename) {
+      return gulp.src(library.src)
+        .pipe(rename(library.rename))
+        .pipe(gulp.dest(library.dest));
+    } else {
+      return gulp.src(library.src)
+        .pipe(gulp.dest(library.dest));
+    }
   }))
   .pipe(debug({title: 'Copied static files'}));
 });
