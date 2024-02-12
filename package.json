@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "gulp build",
-    "start": "http-server ./build/ -p 5000",
+    "start": "http-server ./build/ -p 3000",
     "deploy": "gulp deploy",
     "only:publishAWS": "gulp publishAWS"
   },
@@ -24,20 +24,20 @@
   "license": "MIT",
   "dependencies": {
     "concurrent-transform": "^1.0.0",
-    "del": "^6.0.0",
-    "dotenv": "^9.0.2",
+    "del": "^7.1.0",
+    "dotenv": "^16.4.2",
     "exif-parser": "^0.1.12",
     "fancy-log": "^2.0.0",
     "glob": "^10.3.10",
     "gulp": "^4.0.2",
-    "gulp-awspublish": "^4.1.2",
-    "gulp-debug": "^4.0.0",
+    "gulp-awspublish": "^8.0.0",
+    "gulp-debug": "^5.0.1",
     "gulp-file": "^0.4.0",
     "gulp-plumber": "^1.2.1",
-    "gulp-pug": "^4.0.1",
+    "gulp-pug": "^5.0.0",
     "gulp-rename": "^2.0.0",
     "http-server": "^14.1.1",
-    "imagesloaded": "^4.1.4",
+    "imagesloaded": "^5.0.0",
     "lg-autoplay.js": "^1.2.0",
     "lg-fullscreen.js": "^1.2.0",
     "lg-hash.js": "^1.0.0",
@@ -49,12 +49,22 @@
     "lodash": "^4.17.21",
     "masonry-layout": "^4.2.2",
     "merge-stream": "^2.0.0",
-    "moment": "^2.29.1",
-    "plugin-error": "^1.0.1",
-    "sharp": "^0.28.2",
+    "moment": "^2.30.1",
+    "plugin-error": "^2.0.1",
+    "sharp": "^0.33.2",
     "through2": "^4.0.2",
-    "untildify": "^4.0.0",
-    "vinyl": "^2.2.1",
+    "untildify": "^5.0.0",
+    "vinyl": "^3.0.0",
     "xmp-reader": "0.0.3"
+  },
+  "release-it": {
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/keep-a-changelog": {
+        "filename": "CHANGELOG.md"
+      }
+    }
   }
 }

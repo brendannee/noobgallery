@@ -4,8 +4,9 @@ block content
     h1.gallery-title= galleryTitle
     .horizontal-container
       .gallery-description= galleryDescription
-        span.breadcrumb= " "
-        a.breadcrumb(href='/about.html') [about]
+        if showAboutPage
+          span.breadcrumb= " "
+          a.breadcrumb(href='/about.html') [about]
     if !isTopLevel
       .breadcrumbs
         - var path = '/';

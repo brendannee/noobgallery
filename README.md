@@ -67,33 +67,34 @@ Example AWS Policy:
 Add a `.env` file with the following variables:
 
     GALLERY_TITLE=Your Gallery Name
-    GALLERY_DESCRIPTION=Photos by a noob.
+    GALLERY_DESCRIPTION=Photos by a noob
     GALLERY_LOCAL_PATH=~/path/to/your/gallery/root
     AWS_REGION=us-east-1
     AWS_BUCKET=yourbucketname
-    AWS_ACCESS_KEY=YOUR_AWS_ACCESS_KEY
-    AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET KEY
+    AWS_ACCESS_KEY_ID=YOUR_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
     USE_INDEX_FILE=true
     FORCE_HTTPS=false
-    GOOGLE_ANALYTICS_ID=YOUR_GOOGLE_ANALYTICS_ID
+    SHOW_ABOUT_PAGE=true
     SHOW_CREATED_DATE=true
-    FOOTER_HTML=&copy; 2019 <a href="https://yourwebsite.com">A great photographer</a>
     # For CloudFront distribution without a lambda function
     ALWAYS_ADD_INDEX_HTML_FOR_CLOUD_FRONT=true
 
 You can also set these optional variables, or leave them empty like `this=`
 
+    GOOGLE_ANALYTICS_ID=YOUR_GOOGLE_ANALYTICS_ID
+    FOOTER_HTML=&copy; 2024 <a href="https://yourwebsite.com">A great photographer</a>
     FOOTER_HTML_SUFFIX=info(at)my-domain.net
     COPYRIGHT_MESSAGE=© my name
     FOTOMOTO_STORE_ID=<my fotomoto store ID OR empty>
 
-See the example file `env_template.txt` for the full set of variables.
+See the example file `.env.sample` for the full set of variables.
 
 ## Setup
 
 Install dependencies
 
-    yarn
+    npm install
 
 ## Organizing images
 
@@ -160,21 +161,21 @@ It creates resized versions of all photos that are 3000px wide in a subfolder ca
 
 To run the preprocessing task:
 
-    yarn build
+    npm run build
 
 If your `.env` file is has the correct variables, images will be processed locally and moved to the `./build` folder inside of this project.
 
 To run locally
 
-    yarn start
+    npm start
 
-Open http://localhost:5000 in your browser.
+Open http://localhost:3000 in your browser.
 
 ## Deploying
 
 You can deploy the site to Amazon S3 with:
 
-    yarn deploy
+    npm run deploy
 
 This will work as long as you specify your AWS S3 credentials in a `.env` file.
 

@@ -7,7 +7,8 @@ block content
       .breadcrumbs
         span.breadcrumb &raquo;
         a.breadcrumb(href='/') Home
-        a.breadcrumb(href='/about.html') [about]
+        if showAboutPage
+          a.breadcrumb(href='/about.html') [about]
     .warning
       h3 Oops! that page was not found
       a.breadcrumb(href='/') Go Home

@@ -1,17 +1,18 @@
-require('dotenv').config()
+import 'dotenv/config'
 
-const fs = require('fs');
-const glob = require('glob');
-const path = require('path');
-const util = require('util');
-const untildify = require('untildify');
-const { readdir, statSync, readFileSync } = require('fs');
-const gulp = require('gulp');
-const plumber = require('gulp-plumber');
-const parallel = require('concurrent-transform');
-const mergeStream = require('merge-stream');
-const file = require('gulp-file');
-const debug = require('gulp-debug');
+import fs from 'fs';
+import path from 'path';
+import { cpus } from 'os';
+import util from 'util';
+import { glob } from 'glob';
+import untildify from 'untildify';
+import { readdir, statSync, readFileSync } from 'fs';
+import gulp from 'gulp';
+import plumber from 'gulp-plumber';
+import parallel from 'concurrent-transform';
+import mergeStream from 'merge-stream';
+import file from 'gulp-file';
+import debug from 'gulp-debug';
 // reduce debug noise
 const debugDetailed = (args) =>
   debug(
@@ -19,23 +20,23 @@ const debugDetailed = (args) =>
     minimal: true,
 		showFiles: false
   });
-const fancyLog = require('fancy-log');
+import fancyLog from 'fancy-log';
+import rename from 'gulp-rename';
+import awspublish from 'gulp-awspublish';
+import PluginError from 'plugin-error';
+import Vinyl from 'vinyl';
+import xmpReader from 'xmp-reader';
+import exif from 'exif-parser';
+import _ from 'lodash';
+import moment from 'moment';
+import through from 'through2';
+import sharp from 'sharp';
+import { deleteSync, deleteAsync } from 'del';
+import pug from 'gulp-pug';
 
-const rename = require('gulp-rename');
-const awspublish = require('gulp-awspublish');
-const PluginError = require('plugin-error');
-const Vinyl = require('vinyl');
-const CORES = require('os').cpus().length;
-const xmpReader = require('xmp-reader');
-const exif = require('exif-parser');
-const _ = require('lodash');
-const moment = require('moment');
-const through = require('through2');
-const sharp = require('sharp');
-const del = require('del');
-const pug = require('gulp-pug');
-
+const CORES = cpus().length;
 const buildId = (new Date()).toISOString().split('.')[0].replace(':', '').replace(':',''); // A unique ID for this build, for cache-busting.
+const errors = []
 
 function tryParseYearAndMonth(filename) {
   // yyyy-mm Name
@@ -139,7 +140,6 @@ function writeCopyrightOnImage(pathToImageOrContents, imageFilePath, callback) {
     });
 }
 
-errors = []
 function handleError(error, message) {
   console.error(message);
   console.error(error);
@@ -239,7 +239,7 @@ function gulpDelFile() {
     }
 
     try {
-      del(file.path);
+      deleteSync(file.path);
       return callback(); // continue
     } catch(error) {
       handleError(error, `Error deleting file 1: ${file.path}`);
@@ -461,7 +461,7 @@ const readGalleryJson = pathToExtraJson => {
     if (fs.existsSync(pathToExtraJson)) {
       extraJson = readFileSync(pathToExtraJson, 'utf8');
     }
-    parsed = JSON.parse(extraJson);
+    const parsed = JSON.parse(extraJson);
     if (parsed.tags) {
       // Change tags to lowercase to avoid duplicates across galleries.
       // Also handle if gallery.json incorrectly has its own duplicate tags.
@@ -531,7 +531,8 @@ const _createPugConfig = async (galleryPath, galleryDest, isBottomLevel, items, 
         googleAnalytics: process.env.GOOGLE_ANALYTICS_ID,
         footerHtml: process.env.FOOTER_HTML,
         footerHtmlSuffix: process.env.FOOTER_HTML_SUFFIX,
-        fotomotoStoreId: process.env.FOTOMOTO_STORE_ID
+        fotomotoStoreId: process.env.FOTOMOTO_STORE_ID,
+        showAboutPage: process.env.SHOW_ABOUT_PAGE === 'true'
       },
       items,
       galleryName,
@@ -547,7 +548,7 @@ const _createPugConfig = async (galleryPath, galleryDest, isBottomLevel, items, 
   };
 };
 
-const findGalleryJsonFiles = async dirPath => await glob.glob(`${dirPath}/**/gallery.json`);
+const findGalleryJsonFiles = async dirPath => await glob(`${dirPath}/**/gallery.json`);
 
 // Collect tags from gallery.json input files
 // TODO try to cache, as we call this repeatedly
@@ -666,6 +667,10 @@ const createGalleryTagsHtmlWithFilter = async (galleryPath, filterTags) => {
 };
 
 const createAboutHtml = async dirPath => {
+  if (process.env.SHOW_ABOUT_PAGE !== 'true') {
+    return Promise.resolve();
+  }
+
   fancyLog(` creating about HTML at ` + dirPath + '...')
 
   const pugConfig = await createPugConfigForOtherPage(dirPath, galleryDest);
@@ -871,8 +876,6 @@ gulp.task('publishAWS', () => {
     params: {
       Bucket: process.env.AWS_BUCKET
     },
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
   });
 
   const concurrentUploads = 1000;
@@ -899,7 +902,7 @@ gulp.task('publishAWS', () => {
 });
 
 gulp.task('clean', () => {
-  return del(galleryDest);
+  return deleteAsync(galleryDest);
 });
 
 gulp.task('dumpErrors', callback => {
