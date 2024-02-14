@@ -4,7 +4,11 @@ noobgallery is a static photo gallery powered by [lightgallery.js](https://sachi
 
 <img width="800" src="https://user-images.githubusercontent.com/96217/99756404-ef6e0c00-2aa1-11eb-9369-dde7ecb308ce.png">
 
-You can see noobgallery in action at https://picturethecity.com.
+## Example Sites
+You can see noobgallery in action:
+
+* [picturethecity.com](https://picturethecity.com) (Photos by Brendan Nee)
+* [everydayphotos.net](https://everydayphotos.net) (Every Day Photos by Sean Ryan)
 
 ## Features
 
