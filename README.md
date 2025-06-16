@@ -83,6 +83,9 @@ Add a `.env` file with the following variables:
     SHOW_CREATED_DATE=true
     # For CloudFront distribution without a lambda function
     ALWAYS_ADD_INDEX_HTML_FOR_CLOUD_FRONT=true
+    # To use Wasabi
+    USE_WASABI=true
+    AWS_PROFILE=wasabi
 
 You can also set these optional variables, or leave them empty like `this=`
 
