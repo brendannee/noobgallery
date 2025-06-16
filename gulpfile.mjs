@@ -1069,11 +1069,13 @@ gulp.task('favicon', () => {
 
 gulp.task('publishAWS', () => {
   const credentials = new AWS.SharedIniFileCredentials({ profile: process.env.AWS_PROFILE });
-  if( process.env.USE_WASABI == true } {
+
+  if( process.env.USE_WASABI == true ) {
     const s3endpoint = new AWS.Endpoint('s3.' + process.env.AWS_REGION + '.wasabisys.com');
   } else {
     const s3endpoint = new AWS.Endpoint('s3.' + process.env.AWS_REGION + '.amazonaws.com');
   }
+
   const publisher = awspublish.create({
     region: process.env.AWS_REGION,
     params: {
