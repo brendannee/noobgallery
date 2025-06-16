@@ -29,6 +29,7 @@ import through from 'through2'
 import sharp from 'sharp'
 import { deleteSync, deleteAsync } from 'del'
 import pug from 'gulp-pug'
+import AWS from 'aws-sdk';
 
 const CORES = cpus().length
 const buildId = new Date()
@@ -1067,11 +1068,19 @@ gulp.task('favicon', () => {
 })
 
 gulp.task('publishAWS', () => {
+  const credentials = new AWS.SharedIniFileCredentials({ profile: process.env.AWS_PROFILE });
+  if( process.env.USE_WASABI == true } {
+    const s3endpoint = new AWS.Endpoint('s3.' + process.env.AWS_REGION + '.wasabisys.com');
+  } else {
+    const s3endpoint = new AWS.Endpoint('s3.' + process.env.AWS_REGION + '.amazonaws.com');
+  }
   const publisher = awspublish.create({
     region: process.env.AWS_REGION,
     params: {
       Bucket: process.env.AWS_BUCKET,
     },
+    credentials: credentials,
+    endpoint: s3endpoint,
   })
 
   const concurrentUploads = 1000
