@@ -29,6 +29,10 @@ import through from 'through2'
 import sharp from 'sharp'
 import { deleteSync, deleteAsync } from 'del'
 import pug from 'gulp-pug'
+import AWS from 'aws-sdk';
+
+fancyLog(`Profile: ` + process.env.AWS_PROFILE);
+const credentials = new AWS.SharedIniFileCredentials({ profile: process.env.AWS_PROFILE });
 
 const CORES = cpus().length
 const buildId = new Date()
@@ -1067,11 +1071,25 @@ gulp.task('favicon', () => {
 })
 
 gulp.task('publishAWS', () => {
+  let s3endpoint = ''
+
+  fancyLog( `USE_WASABI: ` + process.env.USE_WASABI )
+
+  if( process.env.USE_WASABI === 'true' ) {
+    s3endpoint = 's3.' + process.env.AWS_REGION + '.wasabisys.com';
+  } else {
+    s3endpoint = 's3.' + process.env.AWS_REGION + '.amazonaws.com';
+  }
+
+  fancyLog( `Endpoint: ` + s3endpoint )
+
   const publisher = awspublish.create({
     region: process.env.AWS_REGION,
     params: {
       Bucket: process.env.AWS_BUCKET,
     },
+    credentials: credentials,
+    endpoint: new AWS.Endpoint( s3endpoint ),
   })
 
   const concurrentUploads = 1000
@@ -1119,6 +1137,7 @@ gulp.task('publishAWS', () => {
 })
 
 gulp.task('clean', () => {
+  fancyLog( `Using: ` + credentials  )
   return deleteAsync(galleryDest)
 })
 
