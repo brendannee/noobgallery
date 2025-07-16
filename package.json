@@ -19,7 +19,8 @@
   "private": false,
   "author": "Brendan Nee <brendan@blinktag.com> (https://picturethecity.com)",
   "contributors": [
-    "Sean Ryan <str_ie@yahoo.co.uk> (https://everydayphotos.net)"
+    "Sean Ryan <str_ie@yahoo.co.uk> (https://everydayphotos.net)",
+    "Tim"
   ],
   "license": "MIT",
   "dependencies": {
