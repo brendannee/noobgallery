@@ -1,6 +1,6 @@
 {
   "name": "noobgallery",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "A minimalistic photo gallery with images stored on Amazon S3 and just the features you want.",
   "main": "index.js",
   "scripts": {
