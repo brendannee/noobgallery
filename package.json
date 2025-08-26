@@ -27,7 +27,7 @@
     "aws-sdk": "^2.1692.0",
     "concurrent-transform": "^1.0.0",
     "del": "^8.0.0",
-    "dotenv": "^17.2.0",
+    "dotenv": "^17.2.1",
     "exif-parser": "^0.1.12",
     "fancy-log": "^2.0.0",
     "glob": "^11.0.3",
