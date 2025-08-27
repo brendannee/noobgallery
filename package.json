@@ -31,7 +31,7 @@
     "exif-parser": "^0.1.12",
     "fancy-log": "^2.0.0",
     "glob": "^11.0.3",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.1",
     "gulp-awspublish": "^8.0.0",
     "gulp-debug": "^5.0.1",
     "gulp-file": "^0.4.0",
