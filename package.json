@@ -24,7 +24,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.1692.0",
+    "aws-sdk": "^2.1693.0",
     "concurrent-transform": "^1.0.0",
     "del": "^8.0.1",
     "dotenv": "^17.2.3",
